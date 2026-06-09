@@ -1,0 +1,17 @@
+model,all_4_combined.csv,descriptors_only.csv,interactions_and_ratios.csv,interactions_only.csv,ratios_only.csv,raw_descs_and_interactions.csv,raw_descs_and_ratios.csv,raw_descs_and_transforms.csv,transformations_only.csv,transforms_and_interactions.csv,transforms_and_ratios.csv
+adaboost,5.0,10.0,4.0,7.0,2.0,7.0,3.0,11.0,9.0,7.0,1.0
+catboost,5.0,9.0,4.0,7.0,1.0,7.0,2.0,11.0,10.0,7.0,3.0
+decision_tree,5.0,10.0,4.0,7.0,1.0,7.0,3.0,11.0,9.0,7.0,2.0
+elastic_net_regression,1.0,11.0,2.0,7.0,3.0,7.0,5.0,10.0,9.0,7.0,4.0
+gbr,4.0,9.0,5.0,7.0,2.0,7.0,1.0,11.0,10.0,7.0,3.0
+knn_regressor,4.0,9.0,5.0,7.0,1.0,7.0,3.0,11.0,10.0,7.0,2.0
+lasso_regression,1.0,11.0,2.0,7.0,3.0,7.0,5.0,10.0,9.0,7.0,4.0
+lightgbm,5.0,9.0,4.0,7.0,2.0,7.0,3.0,10.0,11.0,7.0,1.0
+linear_regression,1.0,11.0,2.0,7.0,3.0,7.0,5.0,10.0,9.0,7.0,4.0
+poly,1.0,8.0,2.0,10.0,3.0,10.0,5.0,6.0,7.0,10.0,4.0
+random_forest,5.0,9.0,4.0,7.0,1.0,7.0,3.0,11.0,10.0,7.0,2.0
+ridge_regression,2.0,11.0,1.0,7.0,3.0,7.0,5.0,10.0,9.0,7.0,4.0
+stack,5.0,9.0,4.0,7.0,1.0,7.0,3.0,11.0,10.0,7.0,2.0
+svr,1.0,11.0,2.0,5.0,8.0,5.0,3.0,9.0,10.0,5.0,7.0
+voting,9.0,5.0,10.0,2.0,6.0,2.0,8.0,4.0,11.0,2.0,7.0
+xgboost,4.0,9.0,5.0,7.0,2.0,7.0,3.0,11.0,10.0,7.0,1.0

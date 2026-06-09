@@ -1,0 +1,12 @@
+dataset,RMSE_mean
+all_4_combined.csv,0.6619648198415147
+descriptors_only.csv,0.8010425624181752
+interactions_and_ratios.csv,0.6618767289634708
+interactions_only.csv,0.7041241782187964
+ratios_only.csv,0.6629864401612494
+raw_descs_and_interactions.csv,0.7041241782187964
+raw_descs_and_ratios.csv,0.6661228541101504
+raw_descs_and_transforms.csv,0.7728254936140376
+transformations_only.csv,0.7766429984320435
+transforms_and_interactions.csv,0.7041241782187964
+transforms_and_ratios.csv,0.6639712080678118

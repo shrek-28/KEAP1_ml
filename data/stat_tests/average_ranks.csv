@@ -1,0 +1,12 @@
+dataset,average_rank
+ratios_only.csv,2.625
+transforms_and_ratios.csv,3.1875
+all_4_combined.csv,3.625
+interactions_and_ratios.csv,3.75
+raw_descs_and_ratios.csv,3.75
+interactions_only.csv,6.75
+raw_descs_and_interactions.csv,6.75
+transforms_and_interactions.csv,6.75
+descriptors_only.csv,9.4375
+transformations_only.csv,9.5625
+raw_descs_and_transforms.csv,9.8125

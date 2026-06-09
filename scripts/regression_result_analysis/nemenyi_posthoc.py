@@ -70,3 +70,17 @@ if "ratios_only.csv" in avg_ranks.index and "all_4_combined.csv" in avg_ranks.in
     print("\nDirect comparison:")
     print("ratios_only rank:", avg_ranks["ratios_only.csv"])
     print("all_4_combined rank:", avg_ranks["all_4_combined.csv"])
+
+# -------------------------
+# Export all results
+# -------------------------
+pivot.to_csv("data/stat_tests/rmse_matrix.csv")
+
+avg_ranks.to_csv("data/stat_tests/average_ranks.csv", header=["average_rank"])
+
+nemenyi.to_csv("data/stat_tests/nemenyi_pvalues.csv")
+
+sig_df = pd.DataFrame(sig_pairs, columns=["dataset_1", "dataset_2", "p_value"])
+sig_df.to_csv("data/stat_tests/significant_pairs.csv", index=False)
+
+print("\nAll result CSV files saved.")
