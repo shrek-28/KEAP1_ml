@@ -1,0 +1,2 @@
+n_estimators,learning_rate,max_depth,subsample,colsample_bytree,reg_lambda,min_child_weight,mean,std,count
+500.0,0.03,6.0,0.8,1.0,5.0,5.0,0.6002020945054067,0.008886100646527175,15.0
