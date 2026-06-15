@@ -84,8 +84,14 @@ plot_metric_with_ci <- function(
 
 df <- read.csv("/Users/shreyasree/Documents/GitHub/KEAP1_ml/data/regression_result_analysis/combined_results.csv")
 
-plot_metric_with_ci(df = df,model_name = "poly", metric = "RMSE", plot_title = "Polynomial Regression RMSE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/rmse_poly.pdf")
-plot_metric_with_ci(df = df,model_name = "poly", metric = "MAE", plot_title = "Polynomial Regression MAE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/mae_poly.pdf")
-plot_metric_with_ci(df = df,model_name = "poly", metric = "MAPE", plot_title = "Polynomial Regression MAPE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/mape_poly.pdf")
-plot_metric_with_ci(df = df,model_name = "poly", metric = "R2", plot_title = "Polynomial Regression R2 Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/r2_poly.pdf")
-plot_metric_with_ci(df = df,model_name = "poly", metric = "MSE", plot_title = "Polynomial Regression MSE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/mse_poly.pdf")
+plot_metric_with_ci(df = df,model_name = "poly", metric = "RMSE", plot_title = "Polynomial Regression RMSE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/poly_reg/rmse_poly.pdf")
+plot_metric_with_ci(df = df,model_name = "poly", metric = "MAE", plot_title = "Polynomial Regression MAE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/poly_reg/mae_poly.pdf")
+plot_metric_with_ci(df = df,model_name = "poly", metric = "MAPE", plot_title = "Polynomial Regression MAPE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/poly_reg/mape_poly.pdf")
+plot_metric_with_ci(df = df,model_name = "poly", metric = "R2", plot_title = "Polynomial Regression R2 Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/poly_reg/r2_poly.pdf")
+plot_metric_with_ci(df = df,model_name = "poly", metric = "MSE", plot_title = "Polynomial Regression MSE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/poly_reg/mse_poly.pdf")
+
+plot_metric_with_ci(df = df,model_name = "stack", metric = "RMSE", plot_title = "Polynomial Regression RMSE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/stack/mse_stack.pdf")
+plot_metric_with_ci(df = df,model_name = "stack", metric = "MAE", plot_title = "Polynomial Regression MAE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/stack/mae_stack.pdf")
+plot_metric_with_ci(df = df,model_name = "stack", metric = "MAPE", plot_title = "Polynomial Regression MAPE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/stack/mape_stack.pdf")
+plot_metric_with_ci(df = df,model_name = "stack", metric = "R2", plot_title = "Polynomial Regression R2 Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/stack/r2_stack.pdf")
+plot_metric_with_ci(df = df,model_name = "stack", metric = "MSE", plot_title = "Polynomial Regression MSE Across Feature Sets", output_file = "/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/model_wise_plots/stack/mse_stack.pdf")
