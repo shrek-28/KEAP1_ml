@@ -1,26 +1,41 @@
 import pandas as pd
-import shutil
+
+df1 = pd.read_csv("data/new_data_pred/top_scorers/top_0.1_percent.csv")
+df2 = pd.read_csv("data/docking_files/docking_scores.csv")
+
+# Clean ligand names
+df2["Ligand"] = df2["Ligand"].str.replace("minimized_", "", regex=False)
+
+# Identifiers in df1 that are NOT present in df2
+missing_identifiers = df1.loc[
+    ~df1["identifier"].isin(df2["Ligand"]),
+    "identifier"
+]
+
+print(missing_identifiers)
+
+for i in missing_identifiers:
+    print("minimized_"+i+"_docked.pdbqt")
+
 from pathlib import Path
 
-# paths
-csv_file = "identifiers.csv"
-source_folder = Path("all_cnp_files")
-destination_folder = Path("selected_cnp_files")
+files_to_delete = [
+    "minimized_CNP0093120.1_docked.pdbqt",
+    "minimized_CNP0166169.7_docked.pdbqt",
+    "minimized_CNP0201578.1_docked.pdbqt",
+    "minimized_CNP0188341.1_docked.pdbqt",
+    "minimized_CNP0110452.1_docked.pdbqt",
+    "minimized_CNP0198595.3_docked.pdbqt",
+    "minimized_CNP0561828.2_docked.pdbqt",
+    "minimized_CNP0194358.1_docked.pdbqt",
+]
 
-destination_folder.mkdir(exist_ok=True)
+directory = Path("data/docking_files/output")  # Replace with the actual folder
 
-# load identifiers
-df = pd.read_csv(csv_file)
-
-# get CNP IDs from identifier column
-cnp_ids = set(df["identifier"].astype(str))
-
-# copy matching files
-for file in source_folder.iterdir():
-    if file.is_file():
-        file_stem = file.stem  # filename without extension
-
-        if file_stem in cnp_ids:
-            shutil.copy2(file, destination_folder / file.name)
-
-print(f"Copied {len(list(destination_folder.iterdir()))} files.")
+for filename in files_to_delete:
+    file_path = directory / filename
+    if file_path.exists():
+        file_path.unlink()
+        print(f"Deleted: {filename}")
+    else:
+        print(f"Not found: {filename}")
