@@ -7,7 +7,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.impute import KNNImputer
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
 
 
 # ==========================================================
@@ -16,9 +16,9 @@ from xgboost import XGBRegressor
 
 DATASET_PATH = "data/final_features_data/ratios_only.csv"
 
-OUT_SHAP_VALUES = "data/SHAP/xgboost_regressor/xgboost_shap_values.csv"
-OUT_SHAP_VALUES_INDEXED = "data/SHAP/xgboost_regressor/xgboost_shap_values_with_index.csv"
-OUT_SHAP_IMPORTANCE = "data/SHAP/xgboost_regressor/xgboost_shap_feature_importance.csv"
+OUT_SHAP_VALUES = "data/SHAP/lightgbm_regressor/lightgbm_shap_values.csv"
+OUT_SHAP_VALUES_INDEXED = "data/SHAP/lightgbm_regressor/lightgbm_shap_values_with_index.csv"
+OUT_SHAP_IMPORTANCE = "data/SHAP/lightgbm_regressor/lightgbm_shap_feature_importance.csv"
 
 OUTER_SPLITS = 5
 INNER_SPLITS = 3
@@ -52,8 +52,7 @@ inner_cv = KFold(n_splits=INNER_SPLITS, shuffle=True, random_state=42)
 param_grid = {
     "model__n_estimators": [200],
     "model__learning_rate": [0.05, 0.1],
-    "model__max_depth": [3, 5],
-    "model__subsample": [0.8]
+    "model__num_leaves": [31]
 }
 
 
@@ -81,11 +80,9 @@ for fold, (train_idx, test_idx) in enumerate(outer_cv.split(X), start=1):
 
     pipeline = Pipeline([
         ("imputer", KNNImputer(n_neighbors=5, weights="distance")),
-        ("model", XGBRegressor(
-            objective="reg:squarederror",
+        ("model", LGBMRegressor(
             random_state=42,
-            n_jobs=1,
-            verbosity=0
+            verbosity=-1
         ))
     ])
 
@@ -133,7 +130,7 @@ print("\nMean RMSE:", metrics_df["RMSE"].mean())
 
 
 # ==========================================================
-# SHAP (TREE EXPLAINER - XGBOOST)
+# SHAP (LIGHTGBM - TREE EXPLAINER)
 # ==========================================================
 
 print("\nComputing SHAP values...")
@@ -141,9 +138,9 @@ print("\nComputing SHAP values...")
 X_train_proc = best_model.named_steps["imputer"].transform(best_X_train)
 X_test_proc = best_model.named_steps["imputer"].transform(best_X_test)
 
-xgb_model = best_model.named_steps["model"]
+lgbm_model = best_model.named_steps["model"]
 
-explainer = shap.TreeExplainer(xgb_model)
+explainer = shap.TreeExplainer(lgbm_model)
 shap_values = explainer.shap_values(X_test_proc)
 
 
