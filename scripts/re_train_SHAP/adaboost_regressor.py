@@ -114,7 +114,7 @@ shap_df = pd.DataFrame(
 )
 
 shap_df.to_csv(
-    "data/adaboost_regressor/shap_values.csv",
+    "data/SHAP/adaboost_regressor/shap_values.csv",
     index=False
 )
 
@@ -123,7 +123,7 @@ shap_df.to_csv(
 # ==========================================
 
 X.to_csv(
-    "data/adaboost_regressor/feature_values.csv",
+    "data/SHAP/adaboost_regressor/feature_values.csv",
     index=False
 )
 
@@ -142,7 +142,7 @@ shap_importance = shap_importance.sort_values(
 )
 
 shap_importance.to_csv(
-    "data/adaboost_regressor/shap_importance.csv",
+    "data/SHAP/adaboost_regressor/shap_importance.csv",
     index=False
 )
 
