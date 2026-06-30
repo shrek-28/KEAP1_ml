@@ -1,0 +1,9 @@
+REMARK SMILES CO
+REMARK SMILES IDX 1 1 2 2
+REMARK H PARENT 2 3
+ROOT
+ATOM      1  C   UNL     1      -0.350  -0.007   0.025  1.00  0.00     0.190 C 
+ATOM      2  O   UNL     1       0.986   0.054   0.433  1.00  0.00    -0.400 OA
+ATOM      3  H   UNL     1       1.283  -0.887   0.536  1.00  0.00     0.210 HD
+ENDROOT
+TORSDOF 0

@@ -1,0 +1,37 @@
+REMARK SMILES CO[C@H]1O[C@@H](C)[C@H](OC(C)=O)[C@@H](NC(C)=O)[C@@H]1O
+REMARK SMILES IDX 3 1 4 2 5 3 6 4 7 5 12 6 17 7 2 8 1 9 18 10 13 12 14 13
+REMARK SMILES IDX 16 14 15 16 8 17 9 18 11 19 10 20
+REMARK H PARENT 18 11 13 15
+ROOT
+ATOM      1  C   UNL     1      -1.535  -1.120  -0.556  1.00  0.00     0.280 C 
+ATOM      2  O   UNL     1      -1.134  -1.173   0.808  1.00  0.00    -0.343 OA
+ATOM      3  C   UNL     1      -0.937   0.149   1.294  1.00  0.00     0.161 C 
+ATOM      4  C   UNL     1      -0.776   0.122   2.813  1.00  0.00     0.043 C 
+ATOM      5  C   UNL     1       0.279   0.846   0.606  1.00  0.00     0.230 C 
+ATOM      6  C   UNL     1       0.768   0.034  -0.617  1.00  0.00     0.159 C 
+ATOM      7  C   UNL     1      -0.424  -0.486  -1.455  1.00  0.00     0.196 C 
+ENDROOT
+BRANCH   1   8
+ATOM      8  O   UNL     1      -1.788  -2.443  -1.005  1.00  0.00    -0.353 OA
+ATOM      9  C   UNL     1      -3.150  -2.616  -1.331  1.00  0.00     0.198 C 
+ENDBRANCH   1   8
+BRANCH   7  10
+ATOM     10  O   UNL     1      -0.961   0.516  -2.284  1.00  0.00    -0.386 OA
+ATOM     11  H   UNL     1      -1.367   1.213  -1.709  1.00  0.00     0.211 HD
+ENDBRANCH   7  10
+BRANCH   6  12
+ATOM     12  N   UNL     1       1.568  -1.107  -0.159  1.00  0.00    -0.347 N 
+ATOM     13  C   UNL     1       2.876  -1.289  -0.507  1.00  0.00     0.217 C 
+ATOM     14  O   UNL     1       3.451  -0.487  -1.228  1.00  0.00    -0.275 OA
+ATOM     15  H   UNL     1       1.130  -1.813   0.449  1.00  0.00     0.164 HD
+ATOM     16  C   UNL     1       3.639  -2.485  -0.017  1.00  0.00     0.114 C 
+ENDBRANCH   6  12
+BRANCH   5  17
+ATOM     17  O   UNL     1      -0.114   2.112   0.201  1.00  0.00    -0.457 OA
+BRANCH  17  18
+ATOM     18  C   UNL     1       0.414   3.290   0.620  1.00  0.00     0.303 C 
+ATOM     19  O   UNL     1       1.306   3.325   1.456  1.00  0.00    -0.253 OA
+ATOM     20  C   UNL     1      -0.109   4.568   0.047  1.00  0.00     0.139 C 
+ENDBRANCH  17  18
+ENDBRANCH   5  17
+TORSDOF 5

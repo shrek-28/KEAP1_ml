@@ -1,0 +1,37 @@
+REMARK SMILES C=C1C[C@@H](O)CC(C)(C)[C@H]1/C=C/C(C)=C\C(=O)O
+REMARK SMILES IDX 11 1 12 2 10 3 1 4 2 5 3 6 4 7 7 8 6 9 8 10 9 11 5 12 13 14
+REMARK SMILES IDX 15 15 14 16 16 17 17 18 18 19
+REMARK H PARENT 5 13 18 20
+ROOT
+ATOM      1  C   UNL     1       0.782  -1.066  -0.352  1.00  0.00    -0.018 C 
+ATOM      2  C   UNL     1       1.593  -0.037  -0.023  1.00  0.00    -0.000 C 
+ENDROOT
+BRANCH   1   3
+ATOM      3  C   UNL     1      -0.696  -1.042  -0.760  1.00  0.00     0.043 C 
+ATOM      4  C   UNL     1      -1.972  -2.987   0.157  1.00  0.00     0.008 C 
+ATOM      5  C   UNL     1      -1.451  -1.765   0.341  1.00  0.00    -0.067 C 
+ATOM      6  C   UNL     1      -1.623  -1.020   1.646  1.00  0.00     0.062 C 
+ATOM      7  C   UNL     1      -2.375   0.298   1.369  1.00  0.00     0.119 C 
+ATOM      8  C   UNL     1      -1.460   0.307  -1.056  1.00  0.00    -0.023 C 
+ATOM      9  C   UNL     1      -1.677   1.128   0.260  1.00  0.00     0.039 C 
+ATOM     10  C   UNL     1      -2.845  -0.036  -1.681  1.00  0.00     0.012 C 
+ATOM     11  C   UNL     1      -0.730   1.157  -2.125  1.00  0.00     0.012 C 
+BRANCH   7  12
+ATOM     12  O   UNL     1      -2.512   1.052   2.546  1.00  0.00    -0.393 OA
+ATOM     13  H   UNL     1      -1.599   1.276   2.868  1.00  0.00     0.210 HD
+ENDBRANCH   7  12
+ENDBRANCH   1   3
+BRANCH   2  14
+ATOM     14  C   UNL     1       3.039  -0.173   0.386  1.00  0.00    -0.044 C 
+ATOM     15  C   UNL     1       3.830   0.888   0.711  1.00  0.00     0.096 C 
+ATOM     16  C   UNL     1       3.716  -1.529   0.520  1.00  0.00     0.044 C 
+BRANCH  15  17
+ATOM     17  C   UNL     1       3.551   2.355   0.674  1.00  0.00     0.328 C 
+ATOM     18  O   UNL     1       4.282   3.087   1.322  1.00  0.00    -0.247 OA
+BRANCH  17  19
+ATOM     19  O   UNL     1       2.621   2.935  -0.114  1.00  0.00    -0.478 OA
+ATOM     20  H   UNL     1       2.193   2.493  -0.854  1.00  0.00     0.297 HD
+ENDBRANCH  17  19
+ENDBRANCH  15  17
+ENDBRANCH   2  14
+TORSDOF 5

@@ -1,0 +1,85 @@
+REMARK SMILES N[C@@H](CCC(=O)N[C@@H](CCS[C@H](CC(=O)O)C(=O)O)C(=O)NCC(=O)O)C(=O)O
+REMARK SMILES IDX 8 1 7 2 5 3 6 4 4 6 3 7 2 8 1 9 27 12 28 13 29 14 9 16 10 17
+REMARK SMILES IDX 11 18 12 19 13 20 14 21 15 22 16 23 17 25 18 26 19 27 20 29
+REMARK SMILES IDX 21 30 22 31 23 33 24 34 25 35 26 36
+REMARK H PARENT 7 5 1 10 1 11 29 15 16 24 19 28 22 32 26 37
+ROOT
+ATOM      1  C   UNL     1      -0.016   0.667   1.119  1.00  0.00     0.172 C 
+ENDROOT
+BRANCH   1   2
+ATOM      2  N   UNL     1      -1.183   0.579   0.251  1.00  0.00    -0.344 N 
+ATOM      3  C   UNL     1      -2.456   0.515   0.719  1.00  0.00     0.220 C 
+ATOM      4  O   UNL     1      -2.677   0.568   1.920  1.00  0.00    -0.275 OA
+ATOM      5  H   UNL     1      -1.044   0.562  -0.771  1.00  0.00     0.164 HD
+BRANCH   3   6
+ATOM      6  C   UNL     1      -3.591   0.404  -0.266  1.00  0.00     0.102 C 
+BRANCH   6   7
+ATOM      7  C   UNL     1      -4.958   0.057   0.356  1.00  0.00     0.040 C 
+BRANCH   7   8
+ATOM      8  C   UNL     1      -5.115  -1.419   0.837  1.00  0.00     0.162 C 
+BRANCH   8   9
+ATOM      9  N   UNL     1      -4.255  -1.745   1.980  1.00  0.00    -0.318 NA
+ATOM     10  H   UNL     1      -4.407  -1.061   2.757  1.00  0.00     0.119 HD
+ATOM     11  H   UNL     1      -3.246  -1.783   1.713  1.00  0.00     0.119 HD
+ENDBRANCH   8   9
+BRANCH   8  12
+ATOM     12  C   UNL     1      -4.891  -2.408  -0.295  1.00  0.00     0.320 C 
+ATOM     13  O   UNL     1      -4.019  -3.260  -0.212  1.00  0.00    -0.251 OA
+BRANCH  12  14
+ATOM     14  O   UNL     1      -5.655  -2.366  -1.407  1.00  0.00    -0.480 OA
+ATOM     15  H   UNL     1      -6.370  -1.725  -1.514  1.00  0.00     0.296 HD
+ENDBRANCH  12  14
+ENDBRANCH   8  12
+ENDBRANCH   7   8
+ENDBRANCH   6   7
+ENDBRANCH   3   6
+ENDBRANCH   1   2
+BRANCH   1  16
+ATOM     16  C   UNL     1       0.905  -0.553   0.887  1.00  0.00     0.046 C 
+BRANCH  16  17
+ATOM     17  C   UNL     1       1.515  -0.620  -0.521  1.00  0.00     0.073 C 
+BRANCH  17  18
+ATOM     18  S   UNL     1       2.464  -2.163  -0.800  1.00  0.00    -0.146 SA
+BRANCH  18  19
+ATOM     19  C   UNL     1       3.939  -1.856   0.260  1.00  0.00     0.167 C 
+BRANCH  19  20
+ATOM     20  C   UNL     1       4.831  -0.706  -0.272  1.00  0.00     0.148 C 
+BRANCH  20  21
+ATOM     21  C   UNL     1       5.412  -0.853  -1.667  1.00  0.00     0.305 C 
+ATOM     22  O   UNL     1       6.098   0.058  -2.100  1.00  0.00    -0.252 OA
+BRANCH  21  23
+ATOM     23  O   UNL     1       5.216  -1.936  -2.455  1.00  0.00    -0.481 OA
+ATOM     24  H   UNL     1       4.712  -2.715  -2.197  1.00  0.00     0.296 HD
+ENDBRANCH  21  23
+ENDBRANCH  20  21
+ENDBRANCH  19  20
+BRANCH  19  25
+ATOM     25  C   UNL     1       4.694  -3.158   0.449  1.00  0.00     0.317 C 
+ATOM     26  O   UNL     1       5.880  -3.242   0.169  1.00  0.00    -0.251 OA
+BRANCH  25  27
+ATOM     27  O   UNL     1       4.066  -4.244   0.950  1.00  0.00    -0.480 OA
+ATOM     28  H   UNL     1       3.129  -4.226   1.191  1.00  0.00     0.296 HD
+ENDBRANCH  25  27
+ENDBRANCH  19  25
+ENDBRANCH  18  19
+ENDBRANCH  17  18
+ENDBRANCH  16  17
+ENDBRANCH   1  16
+BRANCH   1  29
+ATOM     29  C   UNL     1       0.707   1.995   0.946  1.00  0.00     0.243 C 
+ATOM     30  O   UNL     1       1.701   2.210   1.626  1.00  0.00    -0.273 OA
+ATOM     31  N   UNL     1       0.248   2.954   0.085  1.00  0.00    -0.343 N 
+ATOM     32  H   UNL     1      -0.590   2.758  -0.463  1.00  0.00     0.164 HD
+BRANCH  31  33
+ATOM     33  C   UNL     1       0.903   4.244  -0.036  1.00  0.00     0.238 C 
+BRANCH  33  34
+ATOM     34  C   UNL     1       0.264   5.208  -1.027  1.00  0.00     0.322 C 
+ATOM     35  O   UNL     1       0.775   6.310  -1.144  1.00  0.00    -0.250 OA
+BRANCH  34  36
+ATOM     36  O   UNL     1      -0.824   4.933  -1.787  1.00  0.00    -0.480 OA
+ATOM     37  H   UNL     1      -1.317   4.105  -1.807  1.00  0.00     0.296 HD
+ENDBRANCH  34  36
+ENDBRANCH  33  34
+ENDBRANCH  31  33
+ENDBRANCH   1  29
+TORSDOF 20

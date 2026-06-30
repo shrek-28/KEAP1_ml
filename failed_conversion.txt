@@ -1,0 +1,12 @@
+Filename	Reason
+================================================================================
+minimized_CNP0093120.1.sdf	File error: Invalid input file sdf_top_1_pct/minimized_CNP0093120.1.sdf
+minimized_CNP0166169.7.sdf	File error: Invalid input file sdf_top_1_pct/minimized_CNP0166169.7.sdf
+minimized_CNP0437649.1.sdf	RDKit molecule has 2 fragments. Must have 1.
+minimized_CNP0188341.1.sdf	File error: Invalid input file sdf_top_1_pct/minimized_CNP0188341.1.sdf
+minimized_CNP0201578.1.sdf	File error: Invalid input file sdf_top_1_pct/minimized_CNP0201578.1.sdf
+minimized_CNP0455691.1.sdf	RDKit molecule has 2 fragments. Must have 1.
+minimized_CNP0194358.1.sdf	File error: Invalid input file sdf_top_1_pct/minimized_CNP0194358.1.sdf
+minimized_CNP0561828.2.sdf	File error: Invalid input file sdf_top_1_pct/minimized_CNP0561828.2.sdf
+minimized_CNP0198595.3.sdf	File error: Invalid input file sdf_top_1_pct/minimized_CNP0198595.3.sdf
+minimized_CNP0110452.1.sdf	File error: Invalid input file sdf_top_1_pct/minimized_CNP0110452.1.sdf

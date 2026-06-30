@@ -1,0 +1,9 @@
+REMARK SMILES BrCI
+REMARK SMILES IDX 1 1 2 2 3 3
+REMARK H PARENT
+ROOT
+ATOM      1  Br  UNL     1      -1.432   1.164  -0.058  1.00  0.00    -0.081 Br
+ATOM      2  C   UNL     1      -0.063  -0.201  -0.007  1.00  0.00     0.155 C 
+ATOM      3  I   UNL     1       1.859   0.720  -0.045  1.00  0.00    -0.074 I 
+ENDROOT
+TORSDOF 0
