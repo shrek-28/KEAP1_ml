@@ -1,118 +1,137 @@
-import os
-import subprocess
+from pathlib import Path
 import csv
-from concurrent.futures import ProcessPoolExecutor, as_completed
-from tqdm import tqdm
+import time
+from vina import Vina
 
-vina_exe = "vina"
-config_file = "scripts/docking/representatives/vina_config.txt"
+# =====================================================
+# CONFIGURATION
+# =====================================================
 
-ligand_dir = "pdbqt_top_1_pct"          # Folder containing all PDBQT files
-results_dir = "data/docked_top_1_pct_pdbqt"
-csv_path = "data/docked_top_1_pct_pdbqt/docking_results.csv"
+RECEPTOR = "data/docking_files/8XGK_clean.pdbqt"
+LIGAND_DIR = "data/docking_files/pdbqt_top_1_pct"
+OUTPUT_DIR = "data/docking_files/output"
+CSV_FILE = "data/docking_files/docking_scores.csv"
 
-MAX_WORKERS = max(1, os.cpu_count() - 8)
+CENTER = [24.4234, 60.4669, 39.1378]
+BOX_SIZE = [58.1984, 48.2553, 50.3424]
 
-os.makedirs(results_dir, exist_ok=True)
+EXHAUSTIVENESS = 8
+NUM_POSES = 9
 
+# =====================================================
+# INITIALIZATION
+# =====================================================
 
-def dock_ligand(ligand):
-    ligand_path = os.path.join(ligand_dir, ligand)
+start_time = time.time()
 
-    output_file = os.path.join(
-        results_dir,
-        ligand.replace(".pdbqt", "_out.pdbqt")
-    )
+output_dir = Path(OUTPUT_DIR)
+output_dir.mkdir(parents=True, exist_ok=True)
 
-    if os.path.exists(output_file):
-        return ligand, "SKIPPED"
+ligand_files = sorted(Path(LIGAND_DIR).glob("*.pdbqt"))
+total_ligands = len(ligand_files)
 
-    cmd = [
-        vina_exe,
-        "--config", config_file,
-        "--ligand", ligand_path,
-        "--out", output_file,
-        "--cpu", "1"
-    ]
+print(f"Found {total_ligands} ligands.")
+
+vina = Vina(sf_name="vina")
+vina.set_receptor(RECEPTOR)
+
+print("Computing affinity maps...")
+vina.compute_vina_maps(
+    center=CENTER,
+    box_size=BOX_SIZE
+)
+
+csv_path = Path(CSV_FILE)
+
+if not csv_path.exists():
+    with open(csv_path, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "Ligand",
+            "BestScore_kcal_per_mol"
+        ])
+
+# =====================================================
+# DOCKING
+# =====================================================
+
+for idx, ligand in enumerate(ligand_files, start=1):
+
+    ligand_start = time.time()
+
+    print("\n==================================================")
+    print(f"[{idx}/{total_ligands}] {ligand.name}")
 
     try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            check=True
+
+        vina.set_ligand_from_file(str(ligand))
+
+        vina.dock(
+            exhaustiveness=EXHAUSTIVENESS,
+            n_poses=NUM_POSES
         )
 
-        score = "NA"
-        for line in result.stdout.splitlines():
-            if line.strip().startswith("1 "):
-                score = line.split()[1]
-                break
+        energies = vina.energies()
 
-        return ligand, score
+        if len(energies) == 0:
+            raise RuntimeError("Docking returned zero poses.")
 
-    except subprocess.CalledProcessError:
-        return ligand, "FAILED"
+        best_score = float(energies[0][0])
 
+        output_file = output_dir / f"{ligand.stem}_docked.pdbqt"
 
-# -------------------------------------------------------------------
-# Resume support
-# -------------------------------------------------------------------
+        # Save ALL docked poses (up to NUM_POSES)
+        vina.write_poses(
+            str(output_file),
+            n_poses=NUM_POSES,
+            overwrite=True
+        )
 
-processed = set()
+        with open(csv_path, "a", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                ligand.stem,
+                best_score
+            ])
 
-if os.path.exists(csv_path):
-    with open(csv_path, "r") as f:
-        reader = csv.reader(f)
-        next(reader, None)
-        for row in reader:
-            if row:
-                processed.add(row[0])
+        print(f"Best score : {best_score:.3f} kcal/mol")
+        print(f"Saved      : {output_file.resolve()}")
+        print(f"Poses      : {len(energies)}")
 
-ligands = [
-    f for f in os.listdir(ligand_dir)
-    if f.endswith(".pdbqt") and f not in processed
-]
+    except Exception as e:
 
-print(f"Total remaining ligands: {len(ligands)}")
+        print("Docking failed.")
+        print(e)
 
-results_buffer = []
+        with open(csv_path, "a", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                ligand.stem,
+                None
+            ])
 
-with ProcessPoolExecutor(MAX_WORKERS) as executor:
+    ligand_time = time.time() - ligand_start
+    elapsed = time.time() - start_time
 
-    futures = {
-        executor.submit(dock_ligand, ligand): ligand
-        for ligand in ligands
-    }
+    avg_time = elapsed / idx
+    remaining = avg_time * (total_ligands - idx)
 
-    for future in tqdm(as_completed(futures), total=len(futures)):
+    print(f"Time for ligand : {ligand_time:.2f} s")
+    print(f"Elapsed         : {elapsed/60:.2f} min")
+    print(f"Remaining       : {remaining/60:.2f} min")
 
-        ligand, score = future.result()
-        results_buffer.append([ligand, score])
+# =====================================================
+# SUMMARY
+# =====================================================
 
-        if len(results_buffer) >= 50:
-            write_header = not os.path.exists(csv_path)
+total_runtime = time.time() - start_time
 
-            with open(csv_path, "a", newline="") as f:
-                writer = csv.writer(f)
+hours = int(total_runtime // 3600)
+minutes = int((total_runtime % 3600) // 60)
+seconds = total_runtime % 60
 
-                if write_header:
-                    writer.writerow(["Ligand", "Score"])
-
-                writer.writerows(results_buffer)
-
-            results_buffer = []
-
-# Final flush
-if results_buffer:
-    write_header = not os.path.exists(csv_path)
-
-    with open(csv_path, "a", newline="") as f:
-        writer = csv.writer(f)
-
-        if write_header:
-            writer.writerow(["Ligand", "Score"])
-
-        writer.writerows(results_buffer)
-
-print("All docking completed.")
+print("\n==================================================")
+print("Docking completed.")
+print(f"Ligands processed : {total_ligands}")
+print(f"Runtime           : {hours}h {minutes}m {seconds:.2f}s")
+print("==================================================")
