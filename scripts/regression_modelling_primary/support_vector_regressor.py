@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
+
 import os
+import argparse
 import numpy as np
 import pandas as pd
-
 from sklearn.model_selection import KFold, GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.impute import KNNImputer
@@ -9,125 +11,96 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
+parser = argparse.ArgumentParser(description="Nested cross-validation SVR regression")
+parser.add_argument("-i", "--input", required=True, help="Input folder containing CSV files")
+parser.add_argument("-o", "--output", required=True, help="Output CSV file")
+args = parser.parse_args()
 
-def evaluate_nested_svr(folder_path, outer_splits=5, inner_splits=3, output_csv="svr_nested_results.csv"):
+def mape(y_true, y_pred):
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / (y_true + 1e-8))) * 100
 
-    results = []
+outer_cv = KFold(n_splits=5, shuffle=True, random_state=42)
+inner_cv = KFold(n_splits=3, shuffle=True, random_state=42)
 
-    files = [f for f in os.listdir(folder_path) if f.endswith(".csv")]
-    total_files = len(files)
+param_grid = {
+    "model__C": [1, 100],
+    "model__epsilon": [0.1],
+    "model__kernel": ["rbf"]
+}
 
-    print(f"\nTotal datasets found: {total_files}\n")
+results = []
+files = [f for f in os.listdir(args.input) if f.endswith(".csv")]
 
-    outer_cv = KFold(n_splits=outer_splits, shuffle=True, random_state=42)
-    inner_cv = KFold(n_splits=inner_splits, shuffle=True, random_state=42)
+print(f"\nTotal datasets found: {len(files)}\n")
 
-    param_grid = {
-        "model__C": [1, 100],
-        "model__epsilon": [0.1],
-        "model__kernel": ["rbf"],
-    }
+for i, file in enumerate(files, 1):
+    print(f"\n[{i}/{len(files)}] Processing dataset: {file}")
 
-    def mape(y_true, y_pred):
-        y_true = np.array(y_true)
-        y_pred = np.array(y_pred)
-        return np.mean(np.abs((y_true - y_pred) / (y_true + 1e-8))) * 100
+    df = pd.read_csv(os.path.join(args.input, file))
+    if "Score" not in df.columns:
+        print("  -> Skipped (no Score column)")
+        continue
 
-    for i, file in enumerate(files, 1):
+    X = df.drop(columns=["Score", "identifier"], errors="ignore")
+    y = df["Score"].values
+    fold_metrics = []
 
-        print(f"\n[{i}/{total_files}] Processing dataset: {file}")
+    for fold_i, (train_idx, test_idx) in enumerate(outer_cv.split(X), 1):
+        print(f"  -> Outer fold {fold_i}/5")
 
-        path = os.path.join(folder_path, file)
-        df = pd.read_csv(path)
+        X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
 
-        if "Score" not in df.columns:
-            print("  -> Skipped (no Score column)")
-            continue
+        pipeline = Pipeline([
+            ("imputer", KNNImputer(n_neighbors=5, weights="distance")),
+            ("scaler", StandardScaler()),
+            ("model", SVR())
+        ])
 
-        X = df.drop(columns=["Score", "identifier"], errors="ignore")
-        y = df["Score"].values
+        grid = GridSearchCV(
+            pipeline,
+            param_grid,
+            cv=inner_cv,
+            scoring="neg_root_mean_squared_error",
+            n_jobs=-1,
+            error_score="raise"
+        )
 
-        fold_metrics = []
+        print("     - Running GridSearchCV...")
+        grid.fit(X_train, y_train)
+        preds = grid.best_estimator_.predict(X_test)
 
-        fold_total = outer_splits
-
-        for fold_i, (train_idx, test_idx) in enumerate(outer_cv.split(X), 1):
-
-            print(f"  -> Outer fold {fold_i}/{fold_total}")
-
-            X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
-            y_train, y_test = y[train_idx], y[test_idx]
-
-            pipeline = Pipeline([
-                ("imputer", KNNImputer(n_neighbors=5, weights="distance")),
-                ("scaler", StandardScaler()),
-                ("model", SVR())
-            ])
-
-            grid = GridSearchCV(
-                estimator=pipeline,
-                param_grid=param_grid,
-                cv=inner_cv,
-                scoring="neg_root_mean_squared_error",
-                n_jobs=-1,
-                error_score="raise"
-            )
-
-            print("     - Running GridSearchCV...")
-
-            grid.fit(X_train, y_train)
-
-            best_model = grid.best_estimator_
-            preds = best_model.predict(X_test)
-
-            fold_metrics.append({
-                "MAE": mean_absolute_error(y_test, preds),
-                "MSE": mean_squared_error(y_test, preds),
-                "RMSE": np.sqrt(mean_squared_error(y_test, preds)),
-                "R2": r2_score(y_test, preds),
-                "MAPE": mape(y_test, preds)
-            })
-
-        fold_df = pd.DataFrame(fold_metrics)
-
-        results.append({
-            "dataset": file,
-
-            "MAE_mean": fold_df["MAE"].mean(),
-            "MAE_ci": 1.96 * fold_df["MAE"].std() / np.sqrt(len(fold_df)),
-
-            "MSE_mean": fold_df["MSE"].mean(),
-            "MSE_ci": 1.96 * fold_df["MSE"].std() / np.sqrt(len(fold_df)),
-
-            "RMSE_mean": fold_df["RMSE"].mean(),
-            "RMSE_ci": 1.96 * fold_df["RMSE"].std() / np.sqrt(len(fold_df)),
-
-            "R2_mean": fold_df["R2"].mean(),
-            "R2_ci": 1.96 * fold_df["R2"].std() / np.sqrt(len(fold_df)),
-
-            "MAPE_mean": fold_df["MAPE"].mean(),
-            "MAPE_ci": 1.96 * fold_df["MAPE"].std() / np.sqrt(len(fold_df)),
+        fold_metrics.append({
+            "MAE": mean_absolute_error(y_test, preds),
+            "MSE": mean_squared_error(y_test, preds),
+            "RMSE": np.sqrt(mean_squared_error(y_test, preds)),
+            "R2": r2_score(y_test, preds),
+            "MAPE": mape(y_test, preds)
         })
 
-        print(f"  -> DONE: {file}")
+    fold_df = pd.DataFrame(fold_metrics)
 
-    out = pd.DataFrame(results)
-    out.to_csv(output_csv, index=False)
+    results.append({
+        "dataset": file,
+        "MAE_mean": fold_df["MAE"].mean(),
+        "MAE_ci": 1.96 * fold_df["MAE"].std() / np.sqrt(len(fold_df)),
+        "MSE_mean": fold_df["MSE"].mean(),
+        "MSE_ci": 1.96 * fold_df["MSE"].std() / np.sqrt(len(fold_df)),
+        "RMSE_mean": fold_df["RMSE"].mean(),
+        "RMSE_ci": 1.96 * fold_df["RMSE"].std() / np.sqrt(len(fold_df)),
+        "R2_mean": fold_df["R2"].mean(),
+        "R2_ci": 1.96 * fold_df["R2"].std() / np.sqrt(len(fold_df)),
+        "MAPE_mean": fold_df["MAPE"].mean(),
+        "MAPE_ci": 1.96 * fold_df["MAPE"].std() / np.sqrt(len(fold_df))
+    })
 
-    print("\nAll datasets processed. Results saved.")
-    return out
+    print(f"  -> DONE: {file}")
 
-if __name__ == "__main__":
+out = pd.DataFrame(results)
+os.makedirs(os.path.dirname(args.output), exist_ok=True)
+out.to_csv(args.output, index=False)
 
-    folder_path = "data/final_features_data"
-    output_csv = "data/regression_results/svr_results.csv"
-
-    results = evaluate_nested_svr(
-        folder_path=folder_path,
-        outer_splits=5,
-        inner_splits=3,
-        output_csv=output_csv
-    )
-
-    print("\nFINAL SUMMARY")
-    print(results.sort_values("RMSE_mean"))
+print("\nAll datasets processed. Results saved.")
+print("\nFINAL SUMMARY")
+print(out.sort_values("RMSE_mean"))

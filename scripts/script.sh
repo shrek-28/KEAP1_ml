@@ -100,3 +100,40 @@ Rscript scripts/feature_engineering/feature_selection_and_validation/visualizati
 Rscript scripts/feature_engineering/feature_selection_and_validation/visualization/rmse_n_features.R data/rmse_split_results/transforms_and_interactions.csv plots/rmse_n_features/transforms_and_interactions.pdf "Transformations and Interactions"
 Rscript scripts/feature_engineering/feature_selection_and_validation/visualization/rmse_n_features.R data/rmse_split_results/transforms_and_ratios.csv plots/rmse_n_features/transforms_and_ratios.pdf "Transformations and Ratios" 
 
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# STEP 3: REGRESSION MODELLING 
+
+# linear regression
+python3 scripts/regression_modelling_primary/lin_reg.py --input data/final_features_data --output data/regression_results/linear_regression_results.csv
+# lasso regression
+python3 scripts/regression_modelling_primary/lasso_regression.py --input data/final_features_data --output data/regression_results/lasso_regression_results.csv
+# ridge regression
+python3 scripts/regression_modelling_primary/ridge_regression.py --input data/final_features_data --output data/regression_results/ridge_regression_results.csv
+# elastic net regression
+python3 scripts/regression_modelling_primary/elastic_net.py --input data/final_features_data --output data/regression_results/elastic_net_regression_results.csv
+# polynomial regression 
+python3 scripts/regression_modelling_primary/polynomial_regression.py --input data/final_features_data --output data/regression_results/poly_results.csv
+# KNN regression 
+python3 scripts/regression_modelling_primary/knn_regressor.py --input data/final_features_data --output data/regression_results/knn_regressor_results.csv
+# support vector regression 
+python3 scripts/regression_modelling_primary/support_vector_regressor.py --input data/final_features_data --output data/regression_results/svr_results.csv
+# decision tree regression 
+python3 scripts/regression_modelling_primary/decision_tree_regressor.py --input data/final_features_data --output data/regression_results/decision_tree_results.csv
+# random forest regression 
+python3 scripts/regression_modelling_primary/random_forest.py --input data/final_features_data --output data/regression_results/random_forest_results.csv
+# xgboost regression 
+python3 scripts/regression_modelling_primary/xgboost_regressor.py --input data/final_features_data --output data/regression_results/xgboost_results.csv
+# gradient boosting regression 
+python3 scripts/regression_modelling_primary/gradient_boosting.py --input data/final_features_data --output data/regression_results/gbr_results.csv
+# light GBM regression 
+python3 scripts/regression_modelling_primary/lightgbm_regressor.py --input data/final_features_data --output data/regression_results/lightgbm_results.csv
+# catboost regression
+python3 scripts/regression_modelling_primary/catboost_regressor.py --input data/final_features_data --output data/regression_results/catboost_results.csv
+# adaboost regression 
+python3 scripts/regression_modelling_primary/adaboost_regressor.py --input data/final_features_data --output data/regression_results/adaboost_results.csv
+# stacking regression 
+python3 scripts/regression_modelling_primary/stacked_model.py --input data/final_features_data --output data/regression_results/stack_results.csv
+# voting regressor 
+python3 scripts/regression_modelling_primary/voting_regressor.py --input data/final_features_data --output data/regression_results/voting_results.csv
