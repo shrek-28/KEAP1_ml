@@ -2,8 +2,19 @@
 
 import pandas as pd
 from pathlib import Path
+import argparse
 
-folder = Path("data/docking_scores_representatives")
+parser = argparse.ArgumentParser(
+    description="combine docking score CSV files into valid and failed CSVs"
+)
+
+parser.add_argument("-i", "--input", required=True, help="Input folder")
+parser.add_argument("-o", "--output", required=True, help="path to output CSV file (clean docking scores)")
+parser.add_argument("-f", "--failed", required=True, help="path to failed outcomes CSV file")
+
+args = parser.parse_args()
+
+folder = Path(args.input)
 
 valid_dfs = []
 failed_dfs = []
@@ -40,11 +51,11 @@ for file in folder.glob("*.csv"):
 # Save valid scores
 if valid_dfs:
     valid_df = pd.concat(valid_dfs, ignore_index=True)
-    valid_df.to_csv("data/combined_scores/combined_valid_scores.csv", index=False)
+    valid_df.to_csv(args.output, index=False)
 
 # Save failed scores
 if failed_dfs:
     failed_df = pd.concat(failed_dfs, ignore_index=True)
-    failed_df.to_csv("data/combined_scores/combined_failed_scores.csv", index=False)
+    failed_df.to_csv(args.failed, index=False)
 
 print("Done.")

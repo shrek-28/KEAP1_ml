@@ -1,5 +1,11 @@
 library(tidyverse)
 
+args <- commandArgs(trailingOnly = TRUE)
+
+input_folder <- args[1]
+output_plot_path <- args[2]
+plot_title <- args[3]
+
 plot_random_docking_scores <- function(
     input_folder,
     output_plot,
@@ -229,9 +235,10 @@ plot_random_docking_scores <- function(
   ))
 }
 
-result <- plot_random_docking_scores(
-  input_folder="/Users/shreyasree/Documents/GitHub/KEAP1drugdiscovery/data/representative_docking_scores",
-  output_plot="/Users/shreyasree/Documents/GitHub/KEAP1drugdiscovery/plots/representative_analysis/dist_analysis.pdf",
-  plot_title="Docking Affinity Distribution of Representative Molecules against KEAP1"
-)
+# result <- plot_random_docking_scores(
+#   input_folder="/Users/shreyasree/Documents/GitHub/KEAP1drugdiscovery/data/representative_docking_scores",
+#   output_plot="/Users/shreyasree/Documents/GitHub/KEAP1drugdiscovery/plots/representative_analysis/dist_analysis.pdf",
+#   plot_title="Docking Affinity Distribution of Representative Molecules against KEAP1"
+# )
 
+result <- plot_random_docking_scores(input_folder = input_folder, output_plot = output_plot_path, plot_title = plot_title)

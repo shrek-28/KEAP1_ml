@@ -1,10 +1,16 @@
 library(ggplot2)
 
 # --------- HARD-CODED INPUTS ---------
-input_file  <- "/Users/shreyasree/Documents/GitHub/KEAP1drugdiscovery/data/combined_scores/combined_valid_scores.csv"          # path to your CSV
-column_name <- "Score"       # numeric column
-output_file <- "/Users/shreyasree/Documents/GitHub/KEAP1drugdiscovery/plots/representative_analysis/docking_score_histogram.pdf"     # output image
-binwidth    <- 0.5                # or set a number like 25
+args <- commandArgs(trailingOnly = TRUE)
+
+input_file <- args[1]
+column_name <- args[2]
+output_file <- args[3]
+binwidth <- as.numeric(args[4])
+# input_file  <- "/Users/shreyasree/Documents/GitHub/KEAP1drugdiscovery/data/combined_scores/combined_valid_scores.csv"          # path to your CSV
+# column_name <- "Score"       # numeric column
+# output_file <- "/Users/shreyasree/Documents/GitHub/KEAP1drugdiscovery/plots/representative_analysis/docking_score_histogram.pdf"     # output image
+# binwidth    <- 0.5                # or set a number like 25
 
 # --------- Load data ---------
 df <- read.csv(input_file, stringsAsFactors = FALSE)
