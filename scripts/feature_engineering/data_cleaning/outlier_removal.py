@@ -1,9 +1,20 @@
 import pandas as pd
 import numpy as np
+import argparse
+
+parser = argparse.ArgumentParser(
+    description="removal of outliers from a desired column in the dataset using IQR"
+)
+
+parser.add_argument("-i", "--input", required=True, help="Input file")
+parser.add_argument("-c", "--col_name", required=True, help="Column name")
+parser.add_argument("-o", "--output", required=True, help="path to outlier-removed CSV file")
+
+args = parser.parse_args()
 
 # --------- HARD-CODED INPUTS ---------
-input_file = "data/combined_scores/combined_valid_scores.csv"
-column_name = "Score"
+input_file = args.input
+column_name = args.col_name
 
 # --------- Load data ---------
 df = pd.read_csv(input_file)
@@ -28,7 +39,8 @@ upper = Q3 + 1.5 * IQR
 df_clean = df[(x >= lower) & (x <= upper)]
 
 # --------- Save cleaned dataset ---------
-df_clean.to_csv("data/combined_scores/docking_score_data_no_outliers.csv", index=False)
+# df_clean.to_csv("data/combined_scores/docking_score_data_no_outliers.csv", index=False)
+df_clean.to_csv(args.output, index=False)
 
 # --------- Quick sanity output ---------
 print("Original size:", len(mask_finite))

@@ -1,119 +1,84 @@
-import pandas as pd
-import numpy as np
-
-import pandas as pd
-import numpy as np
-
-import pandas as pd
-import numpy as np
+import argparse
 import os
+import numpy as np
+import pandas as pd
 
-def reduce_features_by_score_correlation(
-    input_file,
-    output_file,
-    summary_log_file="data/spearman_feature_selection_log.csv",
-    identifier_col="identifier",
-    score_col="Score",
-    threshold=0.2
-):
-    # Load data
-    df = pd.read_csv(input_file)
-
-    # Numeric columns only
-    numeric_df = df.select_dtypes(include=[np.number])
-
-    # Ensure score exists
-    assert score_col in numeric_df.columns
-
-    score_series = numeric_df[score_col]
-
-    selected_features = []
-
-    for col in numeric_df.columns:
-        if col == score_col:
-            continue
-
-        corr = numeric_df[col].corr(score_series, method="spearman")
-
-        if not np.isnan(corr) and abs(corr) > threshold:
-            selected_features.append(col)
-
-    # Build reduced dataframe
-    cols_to_keep = []
-
-    if identifier_col in df.columns:
-        cols_to_keep.append(identifier_col)
-
-    cols_to_keep.extend(selected_features)
-    cols_to_keep.append(score_col)
-
-    reduced_df = df[cols_to_keep]
-    reduced_df.to_csv(output_file, index=False)
-
-    # ---------------------------
-    # LOGGING SECTION (NEW)
-    # ---------------------------
-    os.makedirs(os.path.dirname(summary_log_file), exist_ok=True)
-
-    log_entry = pd.DataFrame([{
-        "input_file": input_file,
-        "num_selected_features": len(selected_features),
-        "selected_features": ";".join(selected_features)
-    }])
-
-    if os.path.exists(summary_log_file):
-        log_entry.to_csv(summary_log_file, mode="a", header=False, index=False)
-    else:
-        log_entry.to_csv(summary_log_file, index=False)
-
-    print(f"Selected {len(selected_features)} features from {input_file}")
-    print(f"Output shape: {reduced_df.shape}")
-
-    return reduced_df, selected_features
-# only one use data  
-reduce_features_by_score_correlation(
-    input_file="data/engineered_features/with_descriptors.csv", 
-    output_file="data/spearman_reduced_features/descriptors_only.csv"
-)
-reduce_features_by_score_correlation(
-    input_file="/Users/shreyasree/Documents/GitHub/KEAP1drugdiscovery/data/engineered_features/descriptor_ratios_both_directions.csv",
-    output_file="data/spearman_reduced_features/ratios_only.csv"
-)
-reduce_features_by_score_correlation(
-    input_file="data/engineered_features/descriptor_transformations.csv", 
-    output_file="data/spearman_reduced_features/transformations_only.csv"
-)
-reduce_features_by_score_correlation(
-    input_file="data/engineered_features/descriptor_interactions.csv", 
-    output_file="data/spearman_reduced_features/interactions_only.csv"
+parser = argparse.ArgumentParser(
+    description="Select features based on their Spearman correlation with docking score."
 )
 
-# merged datasets 
-reduce_features_by_score_correlation(
-    input_file="data/engineered_features/merged/raw_descriptors_and_transformations.csv", 
-    output_file="data/spearman_reduced_features/raw_descs_and_transforms.csv"
-)
-reduce_features_by_score_correlation(
-    input_file="data/engineered_features/merged/raw_descriptors_and_interactions.csv", 
-    output_file="data/spearman_reduced_features/raw_descs_and_interactions.csv"
-)
-reduce_features_by_score_correlation(
-    input_file="data/engineered_features/merged/raw_descriptors_and_ratios.csv", 
-    output_file="data/spearman_reduced_features/raw_descs_and_ratios.csv"
-)
-reduce_features_by_score_correlation(
-    input_file="data/engineered_features/merged/transformations_and_ratios.csv",
-    output_file="data/spearman_reduced_features/transforms_and_ratios.csv"
-)
-reduce_features_by_score_correlation(
-    input_file="data/engineered_features/merged/transformations_and_interactions.csv",
-    output_file="data/spearman_reduced_features/transforms_and_interactions.csv"
-)
-reduce_features_by_score_correlation(
-    input_file="data/engineered_features/merged/interactions_and_ratios.csv",
-    output_file="data/spearman_reduced_features/interactions_and_ratios.csv"
-)
-reduce_features_by_score_correlation(
-    input_file="data/engineered_features/merged/all_4_combined.csv",
-    output_file="data/spearman_reduced_features/all_4_combined.csv"
-)
+parser.add_argument("-i", "--input", required=True, help="Input CSV file")
+parser.add_argument("-o", "--output", required=True, help="Output CSV file")
+parser.add_argument("-l", "--log", default="data/spearman_feature_selection_log.csv", help="Summary log CSV file")
+parser.add_argument("-t", "--threshold", type=float, default=0.2, help="absolute spearman correlation thresold (default = 0.2)")
+
+args = parser.parse_args()
+
+# Load data
+df = pd.read_csv(args.input)
+
+# Numeric columns only
+numeric_df = df.select_dtypes(include=[np.number])
+
+# Ensure score exists
+if "Score" not in numeric_df.columns:
+    raise ValueError("Score column not found or is not numeric.")
+
+score_series = numeric_df["Score"]
+
+selected_features = []
+
+for col in numeric_df.columns:
+
+    if col == "Score":
+        continue
+
+    corr = numeric_df[col].corr(score_series, method="spearman")
+
+    if not np.isnan(corr) and abs(corr) > args.threshold:
+        selected_features.append(col)
+
+
+# Build reduced dataframe
+cols_to_keep = []
+
+if "identifier" in df.columns:
+    cols_to_keep.append("identifier")
+
+cols_to_keep.extend(selected_features)
+cols_to_keep.append("Score")
+
+reduced_df = df[cols_to_keep]
+
+# Create output directory
+output_dir = os.path.dirname(args.output)
+
+if output_dir:
+    os.makedirs(output_dir, exist_ok=True)
+
+# Save reduced dataset
+reduced_df.to_csv(args.output, index=False)
+
+# ---------------------------
+# LOGGING
+# ---------------------------
+
+log_dir = os.path.dirname(args.log)
+
+if log_dir:
+    os.makedirs(log_dir, exist_ok=True)
+
+log_entry = pd.DataFrame([{
+    "input_file": args.input,
+    "num_selected_features": len(selected_features),
+    "selected_features": ";".join(selected_features)
+}])
+
+if os.path.exists(args.log):
+    log_entry.to_csv(args.log, mode="a", header=False, index=False)
+else:
+    log_entry.to_csv(args.log, index=False)
+
+print(f"Selected {len(selected_features)} features from {args.input}")
+print(f"Output shape: {reduced_df.shape}")
+print(f"Saved: {args.output}")
