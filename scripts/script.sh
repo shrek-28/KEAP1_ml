@@ -138,10 +138,6 @@ python3 scripts/regression_modelling_primary/stacked_model.py --input data/final
 # voting regressor 
 python3 scripts/regression_modelling_primary/voting_regressor.py --input data/final_features_data --output data/regression_results/voting_results.csv
 
-# neural networks on ratios_only.csv (best dataset)
-# ANN_XGBoost 
-# TabNet 
-
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -312,3 +308,58 @@ Rscript scripts/regression_result_analysis/visualization/average_rank_comparison
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # STEP 5: SHAP AND RETRAINING MODELS FOR INTERPRETABILITY ON BEST DATASET 
+
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml/data
+mkdir SHAP_data 
+
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/re_train_SHAP/adaboost_regressor.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/adaboost_regressor 
+python3 scripts/re_train_SHAP/catboost_regressor.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/catboost_regressor  
+python3 scripts/re_train_SHAP/decision_tree_regressor.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/decision_tree_regressor  
+python3 scripts/re_train_SHAP/elastic_net_regression.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/elastic_net_regressor
+python3 scripts/re_train_SHAP/gradient_boosting.py  --input data/final_features_data/ratios_only.csv --output data/SHAP_data/gradient_boosting_regression
+python3 scripts/re_train_SHAP/knn_regressor.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/knn_regression
+python3 scripts/re_train_SHAP/lasso_regressor.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/lasso_regression
+python3 scripts/re_train_SHAP/lightgbm_regressor.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/lightgbm_regression
+python3 scripts/re_train_SHAP/lin_reg.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/linear_regression
+python3 scripts/re_train_SHAP/polynomial_reg.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/polynomial_regression
+python3 scripts/re_train_SHAP/random_forest_regressor.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/random_forest_regression
+python3 scripts/re_train_SHAP/ridge_regressor.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/ridge_regression
+python3 scripts/re_train_SHAP/svm_regressor.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/svr_regression
+python3 scripts/re_train_SHAP/xgboost_regressor.py --input data/final_features_data/ratios_only.csv --output data/SHAP_data/xgboost_regression
+
+# shap data visualization - beeswarm plots 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/adaboost_regressor/shap_plot_data.csv --output plots/SHAP_plots/adaboost_regressor/beeswarm.pdf --title "SHAP Importance: AdaBoost Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/catboost_regressor/shap_plot_data.csv --output plots/SHAP_plots/catboost_regressor/beeswarm.pdf --title "SHAP Importance: CatBoost Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/decision_tree_regressor/shap_plot_data.csv --output plots/SHAP_plots/decision_tree_regressor/beeswarm.pdf --title "SHAP Importance: Decision Tree Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/elastic_net_regressor/shap_plot_data.csv --output plots/SHAP_plots/elastic_net_regressor/beeswarm.pdf --title "SHAP Importance: Elastic Net Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/gradient_boosting_regression/shap_plot_data.csv --output plots/SHAP_plots/gradient_boosting_regression/beeswarm.pdf --title "SHAP Importance: Gradient Boosting Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/knn_regression/shap_plot_data.csv --output plots/SHAP_plots/knn_regression/beeswarm.pdf --title "SHAP Importance: KNN Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/lasso_regression/shap_plot_data.csv --output plots/SHAP_plots/lasso_regression/beeswarm.pdf --title "SHAP Importance: LASSO Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/lightgbm_regression/shap_plot_data.csv --output plots/SHAP_plots/lightgbm_regression/beeswarm.pdf --title "SHAP Importance: LightGBM Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/linear_regression/shap_plot_data.csv --output plots/SHAP_plots/linear_regression/beeswarm.pdf --title "SHAP Importance: Linear Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/random_forest_regression/shap_plot_data.csv --output plots/SHAP_plots/random_forest_regression/beeswarm.pdf --title "SHAP Importance: Random Forest Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/polynomial_regression/shap_plot_data.csv --output plots/SHAP_plots/polynomial_regression/beeswarm.pdf --title "SHAP Importance: Polynomial Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/ridge_regression/shap_plot_data.csv --output plots/SHAP_plots/ridge_regression/beeswarm.pdf --title "SHAP Importance: Ridge Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/svr_regression/shap_plot_data.csv --output plots/SHAP_plots/svr_regression/beeswarm.pdf --title "SHAP Importance: SVR Regression"
+Rscript scripts/re_train_SHAP/visualization/beeswarm_plot.R --input data/SHAP_data/xgboost_regression/shap_plot_data.csv --output plots/SHAP_plots/xgboost_regression/beeswarm.pdf --title "SHAP Importance: XGBoost Regression"
+
+# shap data visualization - feature importance bar plot 
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/adaboost_regressor/shap_importance.csv --output plots/SHAP_plots/adaboost_regressor/top20_feat_imp.pdf --title "SHAP Importance: AdaBoost Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/catboost_regressor/shap_importance.csv --output plots/SHAP_plots/catboost_regressor/top20_feat_imp.pdf --title "SHAP Top 20 Features: CatBoost Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/decision_tree_regressor/shap_importance.csv --output plots/SHAP_plots/decision_tree_regressor/top20_feat_imp.pdf --title "SHAP Top 20 Features: Decision Tree Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/elastic_net_regressor/shap_importance.csv --output plots/SHAP_plots/elastic_net_regressor/top20_feat_imp.pdf --title "SHAP Top 20 Features: Elastic Net Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/gradient_boosting_regression/shap_importance.csv --output plots/SHAP_plots/gradient_boosting_regression/top20_feat_imp.pdf --title "SHAP Top 20 Features: Gradient Boosting Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/knn_regression/shap_importance.csv --output plots/SHAP_plots/knn_regression/top20_feat_imp.pdf --title "SHAP Top 20 Features: KNN Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/lasso_regression/shap_importance.csv --output plots/SHAP_plots/lasso_regression/top20_feat_imp.pdf --title "SHAP Top 20 Features: LASSO Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/lightgbm_regression/shap_importance.csv --output plots/SHAP_plots/lightgbm_regression/top20_feat_imp.pdf --title "SHAP Top 20 Features: LightGBM Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/linear_regression/shap_importance.csv --output plots/SHAP_plots/linear_regression/top20_feat_imp.pdf --title "SHAP Top 20 Features: Linear Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/random_forest_regression/shap_importance.csv --output plots/SHAP_plots/random_forest_regression/top20_feat_imp.pdf --title "SHAP Top 20 Features: Random Forest Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/polynomial_regression/shap_importance.csv --output plots/SHAP_plots/polynomial_regression/top20_feat_imp.pdf --title "SHAP Top 20 Features: Polynomial Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/ridge_regression/shap_importance.csv --output plots/SHAP_plots/ridge_regression/top20_feat_imp.pdf --title "SHAP Top 20 Features: Ridge Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/svr_regression/shap_importance.csv --output plots/SHAP_plots/svr_regression/top20_feat_imp.pdf --title "SHAP Top 20 Features: SVR Regression"
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/SHAP_data/xgboost_regression/shap_importance.csv --output plots/SHAP_plots/xgboost_regression/top20_feat_imp.pdf --title "SHAP Top 20 Features: XGBoost Regression"
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

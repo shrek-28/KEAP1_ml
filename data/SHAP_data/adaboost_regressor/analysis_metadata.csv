@@ -1,8 +1,14 @@
 Parameter,Value
 Input_File,data/final_features_data/ratios_only.csv
-Number_of_Samples,11359
-Number_of_Features,80
-CV_Folds,5
+Model,AdaBoostRegressor
+Best_Fold,3
+Test_Samples,2272
+Features,80
+Outer_CV_Splits,5
+Inner_CV_Splits,3
 KNN_Neighbors,5
 SHAP_Background_Size,100
 Random_State,42
+Best_RMSE,0.7419806273272038
+Mean_RMSE,0.7623321122045589
+SHAP_Explainer,shap.Explainer
