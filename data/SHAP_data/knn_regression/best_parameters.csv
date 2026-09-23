@@ -1,0 +1,5 @@
+Parameter,Value
+model__leaf_size,20
+model__metric,manhattan
+model__n_neighbors,11
+model__weights,distance

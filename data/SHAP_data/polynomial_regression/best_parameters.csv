@@ -1,0 +1,4 @@
+Parameter,Value
+model__fit_intercept,True
+poly__degree,1
+poly__interaction_only,False

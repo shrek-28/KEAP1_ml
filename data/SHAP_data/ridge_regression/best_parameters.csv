@@ -1,0 +1,5 @@
+Parameter,Value
+model__alpha,1
+model__fit_intercept,True
+model__solver,auto
+model__tol,0.001

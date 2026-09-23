@@ -1,0 +1,4 @@
+Parameter,Value
+model__C,1
+model__epsilon,0.1
+model__kernel,rbf

@@ -1,0 +1,4 @@
+Parameter,Value
+model__learning_rate,0.1
+model__n_estimators,200.0
+model__num_leaves,31.0

@@ -1,0 +1,4 @@
+Parameter,Value
+model__depth,6.0
+model__iterations,300.0
+model__learning_rate,0.1

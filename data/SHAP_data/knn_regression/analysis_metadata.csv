@@ -1,0 +1,2 @@
+InputFile,Model,BestFold,TestSamples,TotalBestFoldTestSamples,Features,OuterCVSplits,InnerCVSplits,RandomState,SHAPSamples,SHAPBackgroundSamples,BestRMSE,MeanRMSE,SHAPExplainer
+data/final_features_data/ratios_only.csv,KNeighborsRegressor,3,100,2272,80,5,3,42,100,50,0.6477317105404247,0.6652661083714028,KernelExplainer

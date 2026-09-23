@@ -1,0 +1,6 @@
+Parameter,Value
+model__alpha,0.001
+model__fit_intercept,True
+model__max_iter,30000
+model__selection,cyclic
+model__tol,0.001

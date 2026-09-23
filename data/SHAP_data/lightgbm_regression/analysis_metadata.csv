@@ -1,0 +1,2 @@
+InputFile,Model,BestFold,TestSamples,Features,OuterCVSplits,InnerCVSplits,RandomState,BestRMSE,MeanRMSE,SHAPExplainer
+data/final_features_data/ratios_only.csv,LGBMRegressor,1,2272,80,5,3,42,0.5855084919110585,0.6006764287972324,TreeExplainer

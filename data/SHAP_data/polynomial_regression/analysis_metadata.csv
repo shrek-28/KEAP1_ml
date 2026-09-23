@@ -1,0 +1,2 @@
+InputFile,Model,BestFold,TestSamples,Features,ExpandedFeatures,OuterCVSplits,InnerCVSplits,RandomState,BestRMSE,MeanRMSE,SHAPExplainer
+data/final_features_data/ratios_only.csv,PolynomialRegression,1,2272,80,80,5,3,42,0.6741630373882569,0.6893582436359121,LinearExplainer

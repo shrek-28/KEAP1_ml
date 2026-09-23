@@ -1,0 +1,2 @@
+InputFile,Model,BestFold,TestSamples,Features,OuterCVSplits,InnerCVSplits,RandomState,BestRMSE,MeanRMSE,SHAPExplainer
+data/final_features_data/ratios_only.csv,Lasso,1,2272,80,5,3,42,0.674648930722242,0.688881860068008,LinearExplainer

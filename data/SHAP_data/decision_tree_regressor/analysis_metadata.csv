@@ -1,0 +1,2 @@
+InputFile,Model,BestFold,TestSamples,Features,OuterCVSplits,InnerCVSplits,RandomState,BestRMSE,MeanRMSE,SHAPExplainer
+data/final_features_data/ratios_only.csv,DecisionTreeRegressor,3,2272,80,5,3,42,0.7210683053552097,0.7391274140844044,TreeExplainer

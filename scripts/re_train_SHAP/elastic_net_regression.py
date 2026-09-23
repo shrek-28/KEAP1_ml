@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+
+import os
+import argparse
 import numpy as np
 import pandas as pd
 import shap
@@ -9,26 +13,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import ElasticNet
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
+parser = argparse.ArgumentParser()
+parser.add_argument("-i", "--input", required=True)
+parser.add_argument("-o", "--output", required=True)
+args = parser.parse_args()
 
-# ==========================================================
-# CONFIG
-# ==========================================================
-
-DATASET_PATH = "data/final_features_data/ratios_only.csv"
-
-OUT_SHAP_VALUES = "data/SHAP/elastic_net_regressor/elasticnet_shap_values.csv"
-OUT_SHAP_VALUES_INDEXED = "data/SHAP/elastic_net_regressor/elasticnet_shap_values_with_index.csv"
-OUT_SHAP_IMPORTANCE = "data/SHAP/elastic_net_regressor/elasticnet_shap_feature_importance.csv"
-
-OUTER_SPLITS = 5
-INNER_SPLITS = 3
-
-
-# ==========================================================
-# LOAD DATA
-# ==========================================================
-
-df = pd.read_csv(DATASET_PATH)
+df = pd.read_csv(args.input)
 
 if "Score" not in df.columns:
     raise ValueError("Missing target column: Score")
@@ -36,14 +26,8 @@ if "Score" not in df.columns:
 X = df.drop(columns=["Score", "identifier"], errors="ignore")
 y = df["Score"].values
 
-
-# ==========================================================
-# CV SETUP
-# ==========================================================
-
-outer_cv = KFold(n_splits=OUTER_SPLITS, shuffle=True, random_state=42)
-inner_cv = KFold(n_splits=INNER_SPLITS, shuffle=True, random_state=42)
-
+outer_cv = KFold(n_splits=5, shuffle=True, random_state=42)
+inner_cv = KFold(n_splits=3, shuffle=True, random_state=42)
 
 param_grid = {
     "model__alpha": [
@@ -59,25 +43,15 @@ param_grid = {
     "model__tol": [1e-3]
 }
 
-
-def mape(y_true, y_pred):
-    y_true = np.asarray(y_true)
-    y_pred = np.asarray(y_pred)
-    return np.mean(np.abs((y_true - y_pred) / (y_true + 1e-8))) * 100
-
-
-# ==========================================================
-# NESTED CV + BEST MODEL SELECTION
-# ==========================================================
-
 fold_metrics = []
-
 best_rmse = np.inf
 best_model = None
-best_X_train = None
 best_X_test = None
+best_y_test = None
+best_fold = None
+best_parameters = None
 
-for fold, (train_idx, test_idx) in enumerate(outer_cv.split(X), start=1):
+for fold, (train_idx, test_idx) in enumerate(outer_cv.split(X), 1):
 
     X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
     y_train, y_test = y[train_idx], y[test_idx]
@@ -115,14 +89,19 @@ for fold, (train_idx, test_idx) in enumerate(outer_cv.split(X), start=1):
         "R2": r2
     })
 
-    print(f"Fold {fold} | RMSE: {rmse:.4f} | R2: {r2:.4f}")
+    print(
+        f"Fold {fold} | "
+        f"RMSE: {rmse:.4f} | "
+        f"R2: {r2:.4f}"
+    )
 
     if rmse < best_rmse:
         best_rmse = rmse
         best_model = best_estimator
-        best_X_train = X_train.copy()
         best_X_test = X_test.copy()
-
+        best_y_test = y_test.copy()
+        best_fold = fold
+        best_parameters = grid.best_params_
 
 metrics_df = pd.DataFrame(fold_metrics)
 
@@ -130,65 +109,287 @@ print("\nFINAL METRICS")
 print(metrics_df)
 print("\nMean RMSE:", metrics_df["RMSE"].mean())
 
+# ==========================================================
+# PREPARE BEST TEST SET
+# ==========================================================
+
+X_test_original = best_X_test.copy()
+
+X_test_imputed = best_model.named_steps["imputer"].transform(
+    best_X_test
+)
+
+X_test_scaled = best_model.named_steps["scaler"].transform(
+    X_test_imputed
+)
+
+elastic_model = best_model.named_steps["model"]
+
+predictions = best_model.predict(best_X_test)
 
 # ==========================================================
-# SHAP (NO PLOTS)
+# SHAP
 # ==========================================================
 
 print("\nComputing SHAP values...")
 
-# preprocess using trained pipeline
-X_train_proc = best_model.named_steps["imputer"].transform(best_X_train)
-X_train_proc = best_model.named_steps["scaler"].transform(X_train_proc)
-
-X_test_proc = best_model.named_steps["imputer"].transform(best_X_test)
-X_test_proc = best_model.named_steps["scaler"].transform(X_test_proc)
-
-
-# ElasticNet is linear -> LinearExplainer
-explainer = shap.LinearExplainer(
-    best_model.named_steps["model"],
-    X_train_proc
+X_train_imputed = best_model.named_steps["imputer"].transform(
+    X.iloc[outer_cv.split(X).__next__()[0]]
 )
 
-shap_values = explainer(X_test_proc)
+X_train_scaled = best_model.named_steps["scaler"].transform(
+    X_train_imputed
+)
 
+explainer = shap.LinearExplainer(
+    elastic_model,
+    X_train_scaled
+)
+
+shap_values = explainer(X_test_scaled)
 
 # ==========================================================
-# 1. SHAP PER-SAMPLE VALUES
+# BASE VALUES
+# ==========================================================
+
+base_values = shap_values.base_values
+
+if np.ndim(base_values) == 0:
+    base_values = np.repeat(
+        base_values,
+        len(shap_values.values)
+    )
+
+# ==========================================================
+# OUTPUT DIRECTORY
+# ==========================================================
+
+os.makedirs(args.output, exist_ok=True)
+
+# ==========================================================
+# 1. ANALYSIS METADATA
+# ==========================================================
+
+metadata = pd.DataFrame({
+    "InputFile": [args.input],
+    "Model": ["ElasticNet"],
+    "BestFold": [best_fold],
+    "TestSamples": [len(best_X_test)],
+    "Features": [X.shape[1]],
+    "OuterCVSplits": [5],
+    "InnerCVSplits": [3],
+    "RandomState": [42],
+    "BestRMSE": [best_rmse],
+    "MeanRMSE": [metrics_df["RMSE"].mean()],
+    "SHAPExplainer": ["LinearExplainer"]
+})
+
+metadata.to_csv(
+    f"{args.output}/analysis_metadata.csv",
+    index=False
+)
+
+# ==========================================================
+# 2. BASE VALUES
+# ==========================================================
+
+pd.DataFrame({
+    "OriginalIndex": best_X_test.index,
+    "BaseValue": base_values
+}).to_csv(
+    f"{args.output}/base_values.csv",
+    index=False
+)
+
+# ==========================================================
+# 3. BEST PARAMETERS
+# ==========================================================
+
+parameters = pd.DataFrame([
+    {
+        "Parameter": key,
+        "Value": value
+    }
+    for key, value in best_parameters.items()
+])
+
+parameters.to_csv(
+    f"{args.output}/best_parameters.csv",
+    index=False
+)
+
+# ==========================================================
+# 4. IMPUTED FEATURE VALUES
+# ==========================================================
+
+imputed_df = pd.DataFrame(
+    X_test_imputed,
+    columns=X.columns
+)
+
+imputed_df.insert(
+    0,
+    "OriginalIndex",
+    best_X_test.index
+)
+
+imputed_df.to_csv(
+    f"{args.output}/feature_values_imputed.csv",
+    index=False
+)
+
+# ==========================================================
+# 5. ORIGINAL FEATURE VALUES
+# ==========================================================
+
+original_df = X_test_original.copy()
+
+original_df.insert(
+    0,
+    "OriginalIndex",
+    best_X_test.index
+)
+
+original_df.to_csv(
+    f"{args.output}/feature_values_original.csv",
+    index=False
+)
+
+# ==========================================================
+# 6. SAMPLE IDENTIFIERS
+# ==========================================================
+
+if "identifier" in df.columns:
+
+    identifiers = df.loc[
+        best_X_test.index,
+        "identifier"
+    ].reset_index()
+
+    identifiers.columns = [
+        "OriginalIndex",
+        "Identifier"
+    ]
+
+else:
+
+    identifiers = pd.DataFrame({
+        "OriginalIndex": best_X_test.index
+    })
+
+identifiers.to_csv(
+    f"{args.output}/sample_identifiers.csv",
+    index=False
+)
+
+# ==========================================================
+# 7. MODEL PERFORMANCE
+# ==========================================================
+
+metrics_df.to_csv(
+    f"{args.output}/model_performance.csv",
+    index=False
+)
+
+# ==========================================================
+# 8. PREDICTIONS
+# ==========================================================
+
+predictions_df = pd.DataFrame({
+    "OriginalIndex": best_X_test.index,
+    "ActualScore": best_y_test,
+    "PredictedScore": predictions
+})
+
+predictions_df["Residual"] = (
+    predictions_df["ActualScore"]
+    - predictions_df["PredictedScore"]
+)
+
+predictions_df.to_csv(
+    f"{args.output}/predictions.csv",
+    index=False
+)
+
+# ==========================================================
+# 9. SHAP IMPORTANCE
+# ==========================================================
+
+importance_df = pd.DataFrame({
+    "Feature": X.columns,
+    "MeanAbsSHAP": np.abs(shap_values.values).mean(axis=0)
+}).sort_values(
+    "MeanAbsSHAP",
+    ascending=False
+)
+
+importance_df.to_csv(
+    f"{args.output}/shap_importance.csv",
+    index=False
+)
+
+# ==========================================================
+# 10. SHAP PLOT DATA
+# ==========================================================
+
+plot_data = []
+
+for i in range(len(shap_values.values)):
+    for j, feature in enumerate(X.columns):
+        plot_data.append({
+            "OriginalIndex": best_X_test.index[i],
+            "Feature": feature,
+            "FeatureValue": X_test_imputed[i, j],
+            "SHAPValue": shap_values.values[i, j]
+        })
+
+plot_df = pd.DataFrame(plot_data)
+
+plot_df.to_csv(
+    f"{args.output}/shap_plot_data.csv",
+    index=False
+)
+
+# ==========================================================
+# 11. SHAP VALUES
 # ==========================================================
 
 shap_df = pd.DataFrame(
     shap_values.values,
-    columns=best_X_test.columns
+    columns=X.columns
 )
 
-shap_df.to_csv(OUT_SHAP_VALUES, index=False)
+shap_df.insert(
+    0,
+    "OriginalIndex",
+    best_X_test.index
+)
 
-
-# ==========================================================
-# 2. SHAP WITH ORIGINAL INDEX
-# ==========================================================
-
-shap_indexed = shap_df.copy()
-shap_indexed.insert(0, "OriginalIndex", best_X_test.index)
-
-shap_indexed.to_csv(OUT_SHAP_VALUES_INDEXED, index=False)
-
+shap_df.to_csv(
+    f"{args.output}/shap_values.csv",
+    index=False
+)
 
 # ==========================================================
-# 3. GLOBAL FEATURE IMPORTANCE
+# SUMMARY
 # ==========================================================
 
-importance_df = pd.DataFrame({
-    "Feature": best_X_test.columns,
-    "MeanAbsSHAP": np.abs(shap_values.values).mean(axis=0)
-}).sort_values("MeanAbsSHAP", ascending=False)
-
-importance_df.to_csv(OUT_SHAP_IMPORTANCE, index=False)
-
+print("\nTop 20 SHAP Features:")
+print(importance_df.head(20))
 
 print("\nSaved outputs:")
-print(" -", OUT_SHAP_VALUES)
-print(" -", OUT_SHAP_VALUES_INDEXED)
-print(" -", OUT_SHAP_IMPORTANCE)
+
+for file in [
+    "analysis_metadata.csv",
+    "base_values.csv",
+    "best_parameters.csv",
+    "feature_values_imputed.csv",
+    "feature_values_original.csv",
+    "sample_identifiers.csv",
+    "model_performance.csv",
+    "predictions.csv",
+    "shap_importance.csv",
+    "shap_plot_data.csv",
+    "shap_values.csv"
+]:
+    print(f" - {args.output}/{file}")
