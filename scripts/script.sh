@@ -363,3 +363,23 @@ Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --inpu
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## STEP 6: RE-TRAINING USING XGBOOST 
+
+# pairwise descriptor ratios for retraining data generation
+python3 scripts/retraining/data_cleaning.py --ratios_ip data/final_features_data/ratios_only.csv --docking_ip data/combined_scores/docking_score_data_no_outliers.csv --desc data/final_complete_descriptor_matrix.csv --output data/retraining_all_data.csv
+
+# XGBoost retraining 
+python3 scripts/retraining/xgboost_training.py --input data/final_features_data/ratios_only.csv --output data/final_xgboost
+
+# Generating predictions using trained model 
+python3 scripts/retraining/prediction.py --model data/final_xgboost/best_xgboost_model.pkl --data data/retraining_all_data.csv --output data/new_data_pred/predictions.csv
+
+# extraction of top-scoring molecules from prediction results 
+python3 scripts/retraining/prediction_filters.py --input data/new_data_pred/predictions.csv --output_dir data/new_data_pred/top_scorers --summary data/new_data_pred/top_scorers_summary.csv
+
+# filter-docking results using predicted score cutoffs
+python3 scripts/retraining/representative_filters.py scripts/retraining/representative_filters.py
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
