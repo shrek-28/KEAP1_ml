@@ -1,19 +1,25 @@
+#!/usr/bin/env python3
+
+import os
+import argparse
 import pandas as pd
 from scipy.stats import friedmanchisquare
 import scikit_posthocs as sp
 
-# load data
-df = pd.read_csv("data/regression_result_analysis/combined_results.csv")
+parser = argparse.ArgumentParser(description="Friedman and Nemenyi post-hoc analysis of regression results")
+parser.add_argument("-i", "--input", required=True, help="Combined regression results CSV")
+parser.add_argument("-o", "--output", required=True, help="Output folder")
+args = parser.parse_args()
 
-# pivot: rows=models, columns=datasets
+os.makedirs(args.output, exist_ok=True)
+
+df = pd.read_csv(args.input)
+
 pivot = df.pivot(index="model", columns="dataset", values="RMSE_mean")
 
 print("\nRMSE matrix:\n")
 print(pivot)
 
-# -------------------------
-# Friedman test
-# -------------------------
 data = [pivot[col].values for col in pivot.columns]
 stat, p = friedmanchisquare(*data)
 
@@ -21,31 +27,22 @@ print("\n--- Friedman Test ---")
 print("Statistic:", stat)
 print("p-value:", p)
 
-# -------------------------
-# Average ranks
-# -------------------------
 ranks = pivot.rank(axis=1, method="average", ascending=True)
 avg_ranks = ranks.mean().sort_values()
 
 print("\n--- Average Ranks (lower is better) ---")
 print(avg_ranks)
 
-# -------------------------
-# Nemenyi post-hoc test
-# -------------------------
 nemenyi = sp.posthoc_nemenyi_friedman(pivot.values)
-
 nemenyi.index = pivot.columns
 nemenyi.columns = pivot.columns
 
 print("\n--- Nemenyi p-value matrix ---")
 print(nemenyi)
 
-# -------------------------
-# Interpretation helper
-# -------------------------
 print("\n--- Significant differences (p < 0.05) ---")
 sig_pairs = []
+
 for i in nemenyi.index:
     for j in nemenyi.columns:
         if i != j and nemenyi.loc[i, j] < 0.05:
@@ -57,30 +54,21 @@ else:
     for a, b, pval in sig_pairs:
         print(f"{a} vs {b} -> p = {pval:.4g}")
 
-# -------------------------
-# Final ranking conclusion
-# -------------------------
 best = avg_ranks.index[0]
 
 print("\n--- Final conclusion ---")
 print("Best dataset (Friedman rank):", best)
 
-# check specifically your two contenders if present
 if "ratios_only.csv" in avg_ranks.index and "all_4_combined.csv" in avg_ranks.index:
     print("\nDirect comparison:")
     print("ratios_only rank:", avg_ranks["ratios_only.csv"])
     print("all_4_combined rank:", avg_ranks["all_4_combined.csv"])
 
-# -------------------------
-# Export all results
-# -------------------------
-pivot.to_csv("data/stat_tests/rmse_matrix.csv")
-
-avg_ranks.to_csv("data/stat_tests/average_ranks.csv", header=["average_rank"])
-
-nemenyi.to_csv("data/stat_tests/nemenyi_pvalues.csv")
+pivot.to_csv(os.path.join(args.output, "rmse_matrix.csv"))
+avg_ranks.to_csv(os.path.join(args.output, "average_ranks.csv"), header=["average_rank"])
+nemenyi.to_csv(os.path.join(args.output, "nemenyi_pvalues.csv"))
 
 sig_df = pd.DataFrame(sig_pairs, columns=["dataset_1", "dataset_2", "p_value"])
-sig_df.to_csv("data/stat_tests/significant_pairs.csv", index=False)
+sig_df.to_csv(os.path.join(args.output, "significant_pairs.csv"), index=False)
 
-print("\nAll result CSV files saved.")
+print(f"\nAll result CSV files saved to: {args.output}")

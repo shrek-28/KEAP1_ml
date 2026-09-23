@@ -1,4 +1,13 @@
+#!/usr/bin/env Rscript
+
 library(tidyverse)
+
+args <- commandArgs(trailingOnly = TRUE)
+
+input_file <- args[which(args == "--input") + 1]
+output_file <- args[which(args == "--output") + 1]
+metric <- args[which(args == "--metric") + 1]
+plot_title <- args[which(args == "--title") + 1]
 
 fixed_feature_order <- c(
   "descriptors_only",
@@ -33,136 +42,41 @@ fixed_model_order <- c(
   "voting_regressor"
 )
 
-library(tidyverse)
+df <- read.csv(input_file)
 
-plot_model_heatmap <- function(data,
-                               metric = "MAE_mean",
-                               title = NULL,
-                               x_label = "Feature Set",
-                               y_label = "Model",
-                               model_order = NULL,
-                               feature_order = NULL,
-                               reverse_fill = TRUE,
-                               show_values = TRUE,
-                               value_digits = 2,
-                               output_path = NULL,
-                               width = 7,
-                               height = 10,
-                               dpi = 300) {
-  
-  # -----------------------------
-  # Validate metric
-  # -----------------------------
-  if (!metric %in% colnames(data)) {
-    stop(paste("Metric not found:", metric))
-  }
-  
-  # -----------------------------
-  # Clean dataset names
-  # -----------------------------
-  data <- data %>%
-    mutate(dataset = str_replace(dataset, "\\.csv$", ""))
-  
-  # -----------------------------
-  # Build heatmap data
-  # -----------------------------
-  heatmap_df <- data %>%
-    select(model, dataset, all_of(metric)) %>%
-    group_by(model, dataset) %>%
-    summarise(value = mean(.data[[metric]], na.rm = TRUE),
-              .groups = "drop")
-  
-  # -----------------------------
-  # Apply custom model order
-  # -----------------------------
-  if (!is.null(model_order)) {
-    heatmap_df$model <- factor(heatmap_df$model, levels = model_order)
-  }
-  
-  # -----------------------------
-  # Apply custom feature order
-  # -----------------------------
-  if (!is.null(feature_order)) {
-    feature_order <- str_replace(feature_order, "\\.csv$", "")
-    heatmap_df$dataset <- factor(heatmap_df$dataset, levels = feature_order)
-  }
-  
-  # -----------------------------
-  # Title
-  # -----------------------------
-  if (is.null(title)) {
-    title <- paste0(metric, " (Model vs Feature Set)")
-  }
-  
-  # -----------------------------
-  # Pink gradient
-  # -----------------------------
-  fill_scale <- if (reverse_fill) {
-    scale_fill_gradient(low = "#c51b8a", high = "#fde0dd", name = metric)
-  } else {
-    scale_fill_gradient(low = "#fde0dd", high = "#c51b8a", name = metric)
-  }
-  
-  # -----------------------------
-  # Plot
-  # -----------------------------
-  p <- ggplot(heatmap_df, aes(x = dataset, y = model, fill = value)) +
-    geom_tile(color = "white", linewidth = 0.3) +
-    
-    {if (show_values)
-      geom_text(aes(label = round(value, value_digits)), size = 3)
-    } +
-    
-    fill_scale +
-    
-    labs(
-      title = title,
-      x = x_label,
-      y = y_label
-    ) +
-    
-    theme_minimal() +
-    theme(
-      plot.title = element_text(face = "bold", hjust = 0.5),
-      axis.text.x = element_text(angle = 45, hjust = 1),
-      panel.grid = element_blank()
-    )
-  
-  # -----------------------------
-  # Save if path provided
-  # -----------------------------
-  if (!is.null(output_path)) {
-    ggsave(
-      filename = output_path,
-      plot = p,
-      width = width,
-      height = height,
-      dpi = dpi
-    )
-  }
-  
-  return(p)
-}
+df <- df %>%
+  mutate(dataset = str_replace(dataset, "\\.csv$", ""))
 
-df <- read.csv("/Users/shreyasree/Documents/GitHub/KEAP1_ml/data/regression_result_analysis/combined_results.csv")
+heatmap_df <- df %>%
+  select(model, dataset, all_of(metric)) %>%
+  group_by(model, dataset) %>%
+  summarise(value = mean(.data[[metric]], na.rm = TRUE), .groups = "drop")
 
-plot_model_heatmap(df, metric = "MAE_mean",
-                   title="Mean MAE across Models and Feature Sets",
-                   model_order=fixed_model_order,
-                   feature_order=fixed_feature_order,
-                   output_path="/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/complete_regression_heatmaps/mae_complete.pdf"
-                   )
+heatmap_df$model <- factor(heatmap_df$model, levels = fixed_model_order)
+heatmap_df$dataset <- factor(heatmap_df$dataset, levels = fixed_feature_order)
 
-plot_model_heatmap(df, metric = "RMSE_mean",
-                   title="Mean RMSE across Models and Feature Sets",
-                   model_order=fixed_model_order,
-                   feature_order=fixed_feature_order,
-                   output_path="/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/complete_regression_heatmaps/rmse_complete.pdf"
-)
+p <- ggplot(heatmap_df, aes(x = dataset, y = model, fill = value)) +
+  geom_tile(color = "white", linewidth = 0.3) +
+  geom_text(aes(label = round(value, 2)), size = 3) +
+  scale_fill_gradient(low = "#c51b8a", high = "#fde0dd", name = metric) +
+  labs(
+    title = plot_title,
+    x = "Feature Set",
+    y = "Model"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  )
 
-plot_model_heatmap(df, metric = "R2_mean",
-                   title="Mean R2 across Models and Feature Sets",
-                   model_order=fixed_model_order,
-                   feature_order=fixed_feature_order,
-                   output_path="/Users/shreyasree/Documents/GitHub/KEAP1_ml/plots/complete_regression_heatmaps/r2_complete.pdf"
+dir.create(dirname(output_file), recursive = TRUE, showWarnings = FALSE)
+
+ggsave(
+  output_file,
+  p,
+  width = 7,
+  height = 10,
+  dpi = 300
 )

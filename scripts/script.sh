@@ -137,3 +137,178 @@ python3 scripts/regression_modelling_primary/adaboost_regressor.py --input data/
 python3 scripts/regression_modelling_primary/stacked_model.py --input data/final_features_data --output data/regression_results/stack_results.csv
 # voting regressor 
 python3 scripts/regression_modelling_primary/voting_regressor.py --input data/final_features_data --output data/regression_results/voting_results.csv
+
+# neural networks on ratios_only.csv (best dataset)
+# ANN_XGBoost 
+# TabNet 
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# STEP 4: REGRESSION RESULT ANALYSIS  
+
+# combining results 
+python3 scripts/regression_result_analysis/result_combiner.py --input data/regression_results --output data/regression_result_analysis/combined_results.csv
+
+# friedman statistical test
+python3 scripts/regression_result_analysis/friedman_test.py --input data/regression_result_analysis/combined_results.csv --output data/stat_tests
+ 
+# nemenyi-posthoc test 
+python3 scripts/regression_result_analysis/nemenyi_posthoc.py --input data/regression_result_analysis/combined_results.csv --output data/stat_tests
+
+# visualizations 
+# model wise analysis 
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/linear_reg/rmse.pdf --model linear_regression --metric RMSE --title "Linear Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/linear_reg/mae.pdf --model linear_regression --metric MAE --title "Linear Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/linear_reg/mape.pdf --model linear_regression --metric MAPE --title "Linear Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/linear_reg/r2.pdf --model linear_regression --metric R2 --title "Linear Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/ridge_reg/rmse.pdf --model ridge_regression --metric RMSE --title "Ridge Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/ridge_reg/mae.pdf --model ridge_regression --metric MAE --title "Ridge Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/ridge_reg/mape.pdf --model ridge_regression --metric MAPE --title "Ridge Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/ridge_reg/r2.pdf --model ridge_regression --metric R2 --title "Ridge Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/lasso_reg/rmse.pdf --model lasso_regression --metric RMSE --title "Lasso Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/lasso_reg/mae.pdf --model lasso_regression --metric MAE --title "Lasso Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/lasso_reg/mape.pdf --model lasso_regression --metric MAPE --title "Lasso Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/lasso_reg/r2.pdf --model lasso_regression --metric R2 --title "Lasso Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/elasticnet_reg/rmse.pdf --model elastic_net_regression --metric RMSE --title "Elastic Net Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/elasticnet_reg/mae.pdf --model elastic_net_regression --metric MAE --title "Elastic Net Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/elasticnet_reg/mape.pdf --model elastic_net_regression --metric MAPE --title "Elastic Net Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/elasticnet_reg/r2.pdf --model elastic_net_regression --metric R2 --title "Elastic Net Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/poly_reg/rmse.pdf --model poly --metric RMSE --title "Polynomial Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/poly_reg/mae.pdf --model poly --metric MAE --title "Polynomial Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/poly_reg/mape.pdf --model poly --metric MAPE --title "Polynomial Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/poly_reg/r2.pdf --model poly --metric R2 --title "Polynomial Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/knn_reg/rmse.pdf --model knn_regressor --metric RMSE --title "K-Nearest Neighbours Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/knn_reg/mae.pdf --model knn_regressor --metric MAE --title "K-Nearest Neighbours Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/knn_reg/mape.pdf --model knn_regressor --metric MAPE --title "K-Nearest Neighbours Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/knn_reg/r2.pdf --model knn_regressor --metric R2 --title "K-Nearest Neighbours Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/svm_reg/rmse.pdf --model svr --metric RMSE --title "Support Vector Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/svm_reg/mae.pdf --model svr --metric MAE --title "Support Vector Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/svm_reg/mape.pdf --model svr --metric MAPE --title "Support Vector Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/svm_reg/r2.pdf --model svr --metric R2 --title "Support Vector Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/decision_tree_reg/rmse.pdf --model decision_tree --metric RMSE --title "Decision Tree Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/decision_tree_reg/mae.pdf --model decision_tree --metric MAE --title "Decision Tree Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/decision_tree_reg/mape.pdf --model decision_tree --metric MAPE --title "Decision Tree Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/decision_tree_reg/r2.pdf --model decision_tree --metric R2 --title "Decision Tree Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/random_forest_reg/rmse.pdf --model random_forest --metric RMSE --title "Random Forest Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/random_forest_reg/mae.pdf --model random_forest --metric MAE --title "Random Forest Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/random_forest_reg/mape.pdf --model random_forest --metric MAPE --title "Random Forest Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/random_forest_reg/r2.pdf --model random_forest --metric R2 --title "Random Forest Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/xgboost_reg/rmse.pdf --model xgboost --metric RMSE --title "XGBoost Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/xgboost_reg/mae.pdf --model xgboost --metric MAE --title "XGBoost Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/xgboost_reg/mape.pdf --model xgboost --metric MAPE --title "XGBoost Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/xgboost_reg/r2.pdf --model xgboost --metric R2 --title "XGBoost Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/catboost_reg/rmse.pdf --model catboost --metric RMSE --title "CatBoost Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/catboost_reg/mae.pdf --model catboost --metric MAE --title "CatBoost Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/catboost_reg/mape.pdf --model catboost --metric MAPE --title "CatBoost Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/catboost_reg/r2.pdf --model catboost --metric R2 --title "CatBoost Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/adaboost_reg/rmse.pdf --model adaboost --metric RMSE --title "AdaBoost Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/adaboost_reg/mae.pdf --model adaboost --metric MAE --title "AdaBoost Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/adaboost_reg/mape.pdf --model adaboost --metric MAPE --title "AdaBoost Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/adaboost_reg/r2.pdf --model adaboost --metric R2 --title "AdaBoost Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/lightgbm_reg/rmse.pdf --model lightgbm --metric RMSE --title "LightGBM Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/lightgbm_reg/mae.pdf --model lightgbm --metric MAE --title "LightGBM Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/lightgbm_reg/mape.pdf --model lightgbm --metric MAPE --title "LightGBM Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/lightgbm_reg/r2.pdf --model lightgbm --metric R2 --title "LightGBM Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/grad_boost_reg/rmse.pdf --model gbr --metric RMSE --title "Gradient Boosting Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/grad_boost_reg/mae.pdf --model gbr --metric MAE --title "Gradient Boosting Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/grad_boost_reg/mape.pdf --model gbr --metric MAPE --title "Gradient Boosting Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/grad_boost_reg/r2.pdf --model gbr --metric R2 --title "Gradient Boosting Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/stacking_reg/rmse.pdf --model stack --metric RMSE --title "Stacking Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/stacking_reg/mae.pdf --model stack --metric MAE --title "Stacking Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/stacking_reg/mape.pdf --model stack --metric MAPE --title "Stacking Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/stacking_reg/r2.pdf --model stack --metric R2 --title "Stacking Regression R2 Across Feature Sets"
+
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/voting_reg/rmse.pdf --model voting --metric RMSE --title "Voting Regression RMSE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/voting_reg/mae.pdf --model voting --metric MAE --title "Voting Regression MAE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/voting_reg/mape.pdf --model voting --metric MAPE --title "Voting Regression MAPE Across Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/model_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/model_wise_plots/voting_reg/r2.pdf --model voting --metric R2 --title "Voting Regression R2 Across Feature Sets"
+
+# dataset wise analysis 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/descriptors_only/rmse.pdf --dataset descriptors_only.csv --metric RMSE --title "Descriptors Only RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/descriptors_only/mae.pdf --dataset descriptors_only.csv --metric MAE --title "Descriptors Only MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/descriptors_only/mape.pdf --dataset descriptors_only.csv --metric MAPE --title "Descriptors Only MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/descriptors_only/r2.pdf --dataset descriptors_only.csv --metric R2 --title "Descriptors Only R2 Across Models"
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/ratios_only/rmse.pdf --dataset ratios_only.csv --metric RMSE --title "Ratios Only RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/ratios_only/mae.pdf --dataset ratios_only.csv --metric MAE --title "Ratios Only MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/ratios_only/mape.pdf --dataset ratios_only.csv --metric MAPE --title "Ratios Only MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/ratios_only/r2.pdf --dataset ratios_only.csv --metric R2 --title "Ratios Only R2 Across Models"
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transformations_only/rmse.pdf --dataset transformations_only.csv --metric RMSE --title "Transformations Only RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transformations_only/mae.pdf --dataset transformations_only.csv --metric MAE --title "Transformations Only MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transformations_only/mape.pdf --dataset transformations_only.csv --metric MAPE --title "Transformations Only MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transformations_only/r2.pdf --dataset transformations_only.csv --metric R2 --title "Transformations Only R2 Across Models"
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/interactions_only/rmse.pdf --dataset interactions_only.csv --metric RMSE --title "Interactions Only RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/interactions_only/mae.pdf --dataset interactions_only.csv --metric MAE --title "Interactions Only MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/interactions_only/mape.pdf --dataset interactions_only.csv --metric MAPE --title "Interactions Only MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/interactions_only/r2.pdf --dataset interactions_only.csv --metric R2 --title "Interactions Only R2 Across Models"
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_ratios/rmse.pdf --dataset raw_descs_and_ratios.csv --metric RMSE --title "Raw Descriptors and Ratios RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_ratios/mae.pdf --dataset raw_descs_and_ratios.csv --metric MAE --title "Raw Descriptors and Ratios MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_ratios/mape.pdf --dataset raw_descs_and_ratios.csv --metric MAPE --title "Raw Descriptors and Ratios MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_ratios/r2.pdf --dataset raw_descs_and_ratios.csv --metric R2 --title "Raw Descriptors and Ratios R2 Across Models"
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_interactions/rmse.pdf --dataset raw_descs_and_interactions.csv --metric RMSE --title "Raw Descriptors and Interactions RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_interactions/mae.pdf --dataset raw_descs_and_interactions.csv --metric MAE --title "Raw Descriptors and Interactions MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_interactions/mape.pdf --dataset raw_descs_and_interactions.csv --metric MAPE --title "Raw Descriptors and Interactions MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_interactions/r2.pdf --dataset raw_descs_and_interactions.csv --metric R2 --title "Raw Descriptors and Interactions R2 Across Models"
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_transforms/rmse.pdf --dataset raw_descs_and_transforms.csv --metric RMSE --title "Raw Descriptors and Transformations RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_transforms/mae.pdf --dataset raw_descs_and_transforms.csv --metric MAE --title "Raw Descriptors and Transformations MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_transforms/mape.pdf --dataset raw_descs_and_transforms.csv --metric MAPE --title "Raw Descriptors and Transformations MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/raw_descs_and_transforms/r2.pdf --dataset raw_descs_and_transforms.csv --metric R2 --title "Raw Descriptors and Transformations R2 Across Models"
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transforms_and_interactions/rmse.pdf --dataset transforms_and_interactions.csv --metric RMSE --title "Interactions and Transformations RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transforms_and_interactions/mae.pdf --dataset transforms_and_interactions.csv --metric MAE --title "Interactions and Transformations MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transforms_and_interactions/mape.pdf --dataset transforms_and_interactions.csv --metric MAPE --title "Interactions and Transformations MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transforms_and_interactions/r2.pdf --dataset transforms_and_interactions.csv --metric R2 --title "Interactions and Transformations R2 Across Models"
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transforms_and_ratios/rmse.pdf --dataset transforms_and_ratios.csv --metric RMSE --title "Ratios and Transformations RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transforms_and_ratios/mae.pdf --dataset transforms_and_ratios.csv --metric MAE --title "Ratios and Transformations MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transforms_and_ratios/mape.pdf --dataset transforms_and_ratios.csv --metric MAPE --title "Ratios and Transformations MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/transforms_and_ratios/r2.pdf --dataset transforms_and_ratios.csv --metric R2 --title "Ratios and Transformations R2 Across Models"
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/interactions_and_ratios/rmse.pdf --dataset interactions_and_ratios.csv --metric RMSE --title "Ratios and Interactions RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/interactions_and_ratios/mae.pdf --dataset interactions_and_ratios.csv --metric MAE --title "Ratios and Interactions MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/interactions_and_ratios/mape.pdf --dataset interactions_and_ratios.csv --metric MAPE --title "Ratios and Interactions MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/interactions_and_ratios/r2.pdf --dataset interactions_and_ratios.csv --metric R2 --title "Ratios and Interactions R2 Across Models"
+
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/all_4_combined/rmse.pdf --dataset all_4_combined.csv --metric RMSE --title "Combined RMSE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/all_4_combined/mae.pdf --dataset all_4_combined.csv --metric MAE --title "Combined MAE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/all_4_combined/mape.pdf --dataset all_4_combined.csv --metric MAPE --title "Combined MAPE Across Models"
+Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/dataset_wise_plots/all_4_combined/r2.pdf --dataset all_4_combined.csv --metric R2 --title "Combined R2 Across Models"
+
+# complete model analysis 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+Rscript scripts/regression_result_analysis/visualization/complete_regression_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/complete_regression_heatmaps/mae_complete.pdf --metric MAE_mean --title "Mean MAE across Models and Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/complete_regression_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/complete_regression_heatmaps/rmse_complete.pdf --metric RMSE_mean --title "Mean RMSE across Models and Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/complete_regression_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/complete_regression_heatmaps/r2_complete.pdf --metric R2_mean --title "Mean R2 across Models and Feature Sets"
+
+# nemenyi p-value heatmap
+Rscript scripts/regression_result_analysis/visualization/nemenyi_p_value_heatmap.R --input data/stat_tests/nemenyi_pvalues.csv --output plots/statistical_tests/p_value_heatmap.pdf
+
+# average rank comparison
+Rscript scripts/regression_result_analysis/visualization/average_rank_comparison.R --input data/stat_tests/average_ranks.csv --output plots/statistical_tests/average_rank_comparison.pdf
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# STEP 5: SHAP AND RETRAINING MODELS FOR INTERPRETABILITY ON BEST DATASET 
