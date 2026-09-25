@@ -294,9 +294,9 @@ Rscript scripts/regression_result_analysis/visualization/dataset_wise_analysis.R
 
 # complete model analysis 
 cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
-Rscript scripts/regression_result_analysis/visualization/complete_regression_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/complete_regression_heatmaps/mae_complete.pdf --metric MAE_mean --title "Mean MAE across Models and Feature Sets"
-Rscript scripts/regression_result_analysis/visualization/complete_regression_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/complete_regression_heatmaps/rmse_complete.pdf --metric RMSE_mean --title "Mean RMSE across Models and Feature Sets"
-Rscript scripts/regression_result_analysis/visualization/complete_regression_analysis.R --input data/regression_result_analysis/combined_results.csv --output plots/complete_regression_heatmaps/r2_complete.pdf --metric R2_mean --title "Mean R2 across Models and Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/regression_heatmaps.R --input data/regression_result_analysis/combined_results.csv --output plots/complete_regression_heatmaps/mae_complete.pdf --metric MAE_mean --title "Mean MAE across Models and Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/regression_heatmaps.R --input data/regression_result_analysis/combined_results.csv --output plots/complete_regression_heatmaps/rmse_complete.pdf --metric RMSE_mean --title "Mean RMSE across Models and Feature Sets"
+Rscript scripts/regression_result_analysis/visualization/regression_heatmaps.R --input data/regression_result_analysis/combined_results.csv --output plots/complete_regression_heatmaps/r2_complete.pdf --metric R2_mean --title "Mean R2 across Models and Feature Sets"
 
 # nemenyi p-value heatmap
 Rscript scripts/regression_result_analysis/visualization/nemenyi_p_value_heatmap.R --input data/stat_tests/nemenyi_pvalues.csv --output plots/statistical_tests/p_value_heatmap.pdf
