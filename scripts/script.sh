@@ -364,7 +364,37 @@ Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --inpu
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## STEP 6: RE-TRAINING USING XGBOOST 
+# STEP 6: POST-SHAP ANALYSIS - DESCRIPTOR OCCURRENCE COUNTS AND SUMMARY 
+
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml/data
+mkdir Post_SHAP_analysis
+
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/linear_regression/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/linear_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/elastic_net_regressor/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/elastic_net_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/lasso_regression/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/lasso_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/ridge_regression/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/ridge_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/polynomial_regression/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/polynomial_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/knn_regression/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/knn_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/svr_regression/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/svr_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/decision_tree_regressor/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/decision_tree_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/random_forest_regression/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/random_forest_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/adaboost_regressor/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/adaboost_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/gradient_boosting_regression/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/gradient_boosting_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/catboost_regressor/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/catboost_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/xgboost_regression/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/xgboost_regressor_descriptor_counts.csv
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrences.py --input data/SHAP_data/lightgbm_regression/shap_importance.csv --output data/Post_SHAP_analysis/descriptor_counts/lightgbm_regressor_descriptor_counts.csv
+
+# summary generator of ratios
+python3 scripts/re_train_SHAP/post-shap-analysis/ratio_summaries.py --input data/SHAP_data --output data/Post_SHAP_analysis/ratio_summaries.csv
+
+# summary generator of descriptors
+python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrence_summary.py --input data/Post_SHAP_analysis/descriptor_counts --output data/Post_SHAP_analysis/descriptor_counts_summary.csv
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## STEP 7: RE-TRAINING USING XGBOOST 
 
 # pairwise descriptor ratios for retraining data generation
 python3 scripts/retraining/data_cleaning.py --ratios_ip data/final_features_data/ratios_only.csv --docking_ip data/combined_scores/docking_score_data_no_outliers.csv --desc data/final_complete_descriptor_matrix.csv --output data/retraining_all_data.csv
