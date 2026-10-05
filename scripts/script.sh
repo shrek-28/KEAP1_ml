@@ -454,3 +454,9 @@ python3 scripts/post_docking_analysis/bond_aggregator.py --input data/post_dock_
 
 # integration of bond data with non-toxic molecules
 python3 scripts/post_docking_analysis/integrate_with_non_toxic.py --interactions data/post_dock_analysis/aggregated_bond_results.csv --non-toxic data/admet/non_toxic.csv --output data/post_dock_analysis/integrated_bond_non_toxic.csv --interaction-id CNP_ID --non-toxic-id identifier
+
+# sorting the hydrogen bond -toxicity data integrated 
+python3 scripts/post_docking_analysis/sorter.py --input data/post_dock_analysis/integrated_bond_non_toxic.csv --output data/post_dock_analysis/high_interaction_dataset.csv
+
+# adding binding affinity and SMILES
+python3 scripts/post_docking_analysis/merge_docking_data.py --input data/post_dock_analysis/integrated_bond_non_toxic.csv --smiles data/combined_smiles_data.csv --scores data/docking_files/docking_scores.csv --output data/post_dock_analysis/high_interaction_dataset_with_smiles_and_scores.csv
