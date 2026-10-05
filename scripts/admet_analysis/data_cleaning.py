@@ -1,21 +1,48 @@
-import pandas as pd
+import argparse
 from pathlib import Path
+import pandas as pd
 
-# Folder containing the CSV files
-folder = Path("/Users/shreyasree/Documents/GitHub/KEAP1_ml/data/Identifier_SMILES_Data")
 
-# Get all CSV files
-csv_files = sorted(folder.glob("*.csv"))
+def main():
+    parser = argparse.ArgumentParser(
+        description="Combine all CSV files in a folder into a single CSV."
+    )
 
-# Read and combine
-combined_df = pd.concat(
-    (pd.read_csv(file) for file in csv_files),
-    ignore_index=True
-)
+    parser.add_argument(
+        "--input-dir",
+        required=True,
+        help="Directory containing the input CSV files."
+    )
+    parser.add_argument(
+        "--output",
+        required=True,
+        help="Path for the combined output CSV."
+    )
 
-# Save the combined file
-output_path = "data/combined_smiles_data.csv"
-combined_df.to_csv(output_path, index=False)
+    args = parser.parse_args()
 
-print(f"Combined {len(csv_files)} files into {output_path}")
-print(f"Total rows: {len(combined_df)}")
+    folder = Path(args.input_dir)
+
+    # Get all CSV files
+    csv_files = sorted(folder.glob("*.csv"))
+
+    if not csv_files:
+        raise FileNotFoundError(
+            f"No CSV files found in: {folder}"
+        )
+
+    # Read and combine
+    combined_df = pd.concat(
+        (pd.read_csv(file) for file in csv_files),
+        ignore_index=True
+    )
+
+    # Save
+    combined_df.to_csv(args.output, index=False)
+
+    print(f"Combined {len(csv_files)} files into {args.output}")
+    print(f"Total rows: {len(combined_df)}")
+
+
+if __name__ == "__main__":
+    main()

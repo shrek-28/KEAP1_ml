@@ -409,7 +409,48 @@ python3 scripts/retraining/prediction.py --model data/final_xgboost/best_xgboost
 python3 scripts/retraining/prediction_filters.py --input data/new_data_pred/predictions.csv --output_dir data/new_data_pred/top_scorers --summary data/new_data_pred/top_scorers_summary.csv
 
 # filter-docking results using predicted score cutoffs
-python3 scripts/retraining/representative_filters.py scripts/retraining/representative_filters.py
+python3 scripts/retraining/representative_filters.py --input data/new_data_pred/predictions.csv --cutoffs data/new_data_pred/top_scorers_summary.csv --output_dir data/new_data_pred/cutoff_representatives
+
+# adding predicted and docking scores to the representative molecules
+python3 scripts/re_docking_analysis/data_cleaning.py --docking-scores data/docking_files/docking_scores.csv --top-scorers data/new_data_pred/top_scorers/top_0.1_percent.csv --output data/merged_intersection.csv
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# STEP 8: TOXICITY ANALYSIS
+
+# complete smiles set 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/admet_analysis/data_cleaning.py --input-dir data/Identifier_SMILES_Data --output data/combined_smiles_data.csv
+
+# DATA CLEANING 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/admet_analysis/data_clean_tox.py --toxicity data/admet/toxicity_results.csv --identifiers data/admet/filtered_smiles_data.csv --output data/admet/toxicity_with_identifier.csv
+
+# filtering SMILES data
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/admet_analysis/smiles_filter.py --smiles-data data/combined_smiles_data.csv --docking-data data/merged_intersection.csv --output data/admet/filtered_smiles_data.csv --smiles-only-output data/admet/filtered_smiles_only.csv
+
+# interpretation cleaning
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/admet_analysis/tox_analysis.py --input data/admet/toxicity_with_identifier.csv --output data/admet/interpretation_data.csv
+
+# cleaning data of toxicity and getting non toxic molecules 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/admet_analysis/initial_toxicity_filters.py --input data/admet/interpretation_data.csv --output data/admet/non_toxic.csv
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# STEP 9: POST-DOCKING ANALYSIS - BOND EXTRACTION
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/post_docking_analysis/bond_extractor.py --input data/ligplot_data/1-50_output.csv --bonds-of-interest data/post_dock_analysis/bonds_of_interest.txt --output data/post_dock_analysis/bond_extraction_results_1_50.csv
+python3 scripts/post_docking_analysis/bond_extractor.py --input data/ligplot_data/51-100_output.csv --bonds-of-interest data/post_dock_analysis/bonds_of_interest.txt --output data/post_dock_analysis/bond_extraction_results_51_100.csv
+python3 scripts/post_docking_analysis/bond_extractor.py --input data/ligplot_data/101-150_output.csv --bonds-of-interest data/post_dock_analysis/bonds_of_interest.txt --output data/post_dock_analysis/bond_extraction_results_101_150.csv
+python3 scripts/post_docking_analysis/bond_extractor.py --input data/ligplot_data/151-250_output.csv --bonds-of-interest data/post_dock_analysis/bonds_of_interest.txt --output data/post_dock_analysis/bond_extraction_results_151_250.csv
+python3 scripts/post_docking_analysis/bond_extractor.py --input data/ligplot_data/251_rest_output.csv --bonds-of-interest data/post_dock_analysis/bonds_of_interest.txt --output data/post_dock_analysis/bond_extraction_results_251_rest.csv
+
+# bond aggregation
+python3 scripts/post_docking_analysis/bond_aggregator.py --input data/post_dock_analysis/bond_extraction_results_1_50.csv data/post_dock_analysis/bond_extraction_results_51_100.csv data/post_dock_analysis/bond_extraction_results_101_150.csv data/post_dock_analysis/bond_extraction_results_151_250.csv data/post_dock_analysis/bond_extraction_results_251_rest.csv --output data/post_dock_analysis/aggregated_bond_results.csv
+
+# integration of bond data with non-toxic molecules
+python3 scripts/post_docking_analysis/integrate_with_non_toxic.py --interactions data/post_dock_analysis/aggregated_bond_results.csv --non-toxic data/admet/non_toxic.csv --output data/post_dock_analysis/integrated_bond_non_toxic.csv --interaction-id CNP_ID --non-toxic-id identifier
