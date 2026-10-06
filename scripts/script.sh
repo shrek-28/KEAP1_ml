@@ -460,3 +460,21 @@ python3 scripts/post_docking_analysis/sorter.py --input data/post_dock_analysis/
 
 # adding binding affinity and SMILES
 python3 scripts/post_docking_analysis/merge_docking_data.py --input data/post_dock_analysis/integrated_bond_non_toxic.csv --smiles data/combined_smiles_data.csv --scores data/docking_files/docking_scores.csv --output data/post_dock_analysis/high_interaction_dataset_with_smiles_and_scores.csv
+
+# mmr analysis  
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+cd data/post_dock_analysis
+mkdir mmr_analysis 
+
+cd scripts/post_dock_analysis
+mkdir mmr_analysis 
+
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/post_docking_analysis/mmr_analysis/mmr_analysis.py \
+    --input data/post_dock_analysis/high_interaction_dataset_with_smiles_and_scores.csv \
+    --output data/post_dock_analysis/mmr_analysis/mmr_lambda_results.csv \
+    --similarity-threshold 0.2 \
+    --n-select 5 
+
+# generate tanimoto matrix 
+python3 scripts/post_docking_analysis/mmr_analysis/tanimoto_matrix.py --matrix data/post_dock_analysis/mmr_analysis/tanimoto_similarity_matrix.csv --selected data/post_dock_analysis/mmr_analysis/mmr_lambda_results.csv --output data/post_dock_analysis/mmr_analysis/final_tm_matrix.csv
