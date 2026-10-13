@@ -395,6 +395,20 @@ python3 scripts/re_train_SHAP/post-shap-analysis/ratio_summaries.py --input data
 # summary generator of descriptors
 python3 scripts/re_train_SHAP/post-shap-analysis/descriptor_occurrence_summary.py --input data/Post_SHAP_analysis/descriptor_counts --output data/Post_SHAP_analysis/descriptor_counts_summary.csv
 
+# data summarization into a single folder.
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml/data
+
+mkdir -p SHAP_importance
+
+find SHAP_data -mindepth 2 -type f -name "shap_importance.csv" |
+while read -r file; do
+    folder=$(basename "$(dirname "$file")")
+    head -n 21 "$file" > "SHAP_importance/${folder}.csv"
+done
+
+# heatmap of feature importance x model 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+Rscript scripts/re_train_SHAP/post-shap-analysis/all_features_heatmap.R data/SHAP_importance plots/SHAP_plots/SHAP_heatmap.pdf 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
