@@ -146,6 +146,10 @@ python3 scripts/regression_modelling_primary/voting_regressor.py --input data/fi
 # combining results 
 python3 scripts/regression_result_analysis/result_combiner.py --input data/regression_results --output data/regression_result_analysis/combined_results.csv
 
+# pivot table generation 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/regression_result_analysis/pivot_generator.py --input data/regression_result_analysis/combined_results.csv --output data/regression_result_analysis/pivot_tables.xlsx
+
 # friedman statistical test
 python3 scripts/regression_result_analysis/friedman_test.py --input data/regression_result_analysis/combined_results.csv --output data/stat_tests
  
@@ -413,6 +417,25 @@ python3 scripts/retraining/representative_filters.py --input data/new_data_pred/
 
 # adding predicted and docking scores to the representative molecules
 python3 scripts/re_docking_analysis/data_cleaning.py --docking-scores data/docking_files/docking_scores.csv --top-scorers data/new_data_pred/top_scorers/top_0.1_percent.csv --output data/merged_intersection.csv
+
+# residual analysis 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+cd scripts/retraining
+mkdir residual_analysis
+
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+cd plots
+mkdir residual_analysis
+
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+Rscript scripts/retraining/residual_analysis/act_vs_pred_scatterplot.R data/final_xgboost/final_model_predictions.csv plots/residual_analysis/act_vs_pred_scatterplot.pdf 
+
+# residual calculator 
+python3 scripts/retraining/residual_analysis/residual_calc.py --input data/final_xgboost/final_model_predictions.csv --output data/final_xgboost/residuals.csv
+
+# residual distribution 
+Rscript scripts/retraining/residual_analysis/residual_distribution.R data/final_xgboost/residuals.csv residual plots/residual_analysis/residual_distribution.pdf 0.05
+
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
