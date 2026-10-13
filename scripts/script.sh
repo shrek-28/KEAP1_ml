@@ -450,6 +450,10 @@ python3 scripts/retraining/residual_analysis/residual_calc.py --input data/final
 # residual distribution 
 Rscript scripts/retraining/residual_analysis/residual_distribution.R data/final_xgboost/residuals.csv residual plots/residual_analysis/residual_distribution.pdf 0.05
 
+#xgboost feature importance plot 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+Rscript scripts/re_train_SHAP/visualization/feature_importance_bar_plot.R --input data/final_xgboost/feature_importance.csv --output plots/residual_analysis/xgboost_feature_importance.pdf --title "Final XGBoost Feature Importance"
+
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
