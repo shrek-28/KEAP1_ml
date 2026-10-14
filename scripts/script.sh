@@ -490,7 +490,7 @@ cd /Users/shreyasree/Documents/GitHub/KEAP1_ml/plots
 mkdir admet_analysis
 
 cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
-Rscript scripts/admet_analysis/visualization/stacked_toxicity_plot.R data/admet/grouped_nt_summary.csv 
+Rscript scripts/admet_analysis/visualization/stacked_toxicity_plot.R data/admet/grouped_nt_summary.csv plots/admet_analysis/count_bar_plot.pdf
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

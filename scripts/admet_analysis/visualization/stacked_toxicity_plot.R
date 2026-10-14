@@ -1,15 +1,16 @@
+
 #!/usr/bin/env Rscript
 
 # Usage:
-# Rscript plot_toxicity.R input.csv output.png
-# Example:
-# Rscript plot_toxicity.R toxicity_data.csv toxicity_plot.png
+# Rscript scripts/admet_analysis/visualization/stacked_toxicity_plot.R \
+#   data/admet/grouped_nt_summary.csv \
+#   plots/admet_analysis/count_bar_plot.pdf
 
 args <- commandArgs(trailingOnly = TRUE)
 
 if (length(args) != 2) {
   stop(
-    "Usage: Rscript plot_toxicity.R <input.csv> <output.png/pdf/svg>",
+    "Usage: Rscript <script.R> <input.csv> <output.pdf/png/svg>",
     call. = FALSE
   )
 }
@@ -17,44 +18,84 @@ if (length(args) != 2) {
 input_file <- args[1]
 output_file <- args[2]
 
-# Install missing dependency if necessary
+if (!file.exists(input_file)) {
+  stop("Input file does not exist: ", input_file, call. = FALSE)
+}
+
 if (!requireNamespace("ggplot2", quietly = TRUE)) {
-  stop("Missing package 'ggplot2'. Install it using: install.packages('ggplot2')",
+  stop("Install ggplot2 using install.packages('ggplot2')",
        call. = FALSE)
 }
 
 library(ggplot2)
 
-# Read input CSV
-data <- read.csv(input_file, stringsAsFactors = FALSE, check.names = FALSE)
+# --------------------------------------------------
+# 1. Read and validate data
+# --------------------------------------------------
+
+data <- read.csv(
+  input_file,
+  stringsAsFactors = FALSE,
+  check.names = FALSE
+)
 
 required_cols <- c("Endpoint", "Safe", "Toxic")
 
-if (!all(required_cols %in% colnames(data))) {
-  stop("Input CSV must contain columns: Endpoint, Safe, Toxic",
+if (!all(required_cols %in% names(data))) {
+  stop("CSV must contain Endpoint, Safe, and Toxic columns.",
        call. = FALSE)
 }
 
-if (any(!is.finite(data$Safe)) || any(!is.finite(data$Toxic)) ||
-    any(data$Safe < 0) || any(data$Toxic < 0)) {
-  stop("Safe and Toxic must contain non-negative numeric counts.",
+data$Safe <- as.numeric(data$Safe)
+data$Toxic <- as.numeric(data$Toxic)
+
+if (
+  anyNA(data$Endpoint) ||
+  any(data$Endpoint == "") ||
+  anyNA(data$Safe) ||
+  anyNA(data$Toxic) ||
+  any(!is.finite(data$Safe)) ||
+  any(!is.finite(data$Toxic)) ||
+  any(data$Safe < 0) ||
+  any(data$Toxic < 0)
+) {
+  stop("Endpoints must be present and counts must be non-negative.",
        call. = FALSE)
 }
 
-if (any(data$Safe + data$Toxic == 0)) {
-  stop("Each endpoint must have at least one molecule.",
-       call. = FALSE)
+if (anyDuplicated(data$Endpoint)) {
+  stop("Each endpoint must appear only once.", call. = FALSE)
 }
 
-# Preserve the original endpoint order
-data$Endpoint <- factor(data$Endpoint, levels = data$Endpoint)
+if (any(data$Safe != floor(data$Safe)) ||
+    any(data$Toxic != floor(data$Toxic))) {
+  stop("Counts must be whole numbers.", call. = FALSE)
+}
 
-# Convert counts into percentages
+data$Endpoint <- factor(
+  data$Endpoint,
+  levels = data$Endpoint
+)
+
 data$Total <- data$Safe + data$Toxic
-data$Safe_pct <- 100 * data$Safe / data$Total
-data$Toxic_pct <- 100 * data$Toxic / data$Total
 
-# Long-format data for stacked bars
+# --------------------------------------------------
+# 2. Calculate percentages
+# --------------------------------------------------
+
+data$Safe_pct <- ifelse(
+  data$Total > 0,
+  100 * data$Safe / pmax(data$Total, 1),
+  0
+)
+
+data$Toxic_pct <- ifelse(
+  data$Total > 0,
+  100 * data$Toxic / pmax(data$Total, 1),
+  0
+)
+
+# Explicit stack order: Safe first (bottom), Toxic second (top)
 plot_data <- rbind(
   data.frame(
     Endpoint = data$Endpoint,
@@ -70,65 +111,101 @@ plot_data <- rbind(
   )
 )
 
-# Safe at the bottom; Toxic at the top
 plot_data$Category <- factor(
   plot_data$Category,
   levels = c("Safe", "Toxic")
 )
 
-# Calculate the vertical midpoint of each stack segment
-plot_data <- plot_data[
-  order(plot_data$Endpoint, plot_data$Category),
-]
+# --------------------------------------------------
+# 3. Prepare annotations
+# --------------------------------------------------
 
-plot_data$Label_y <- ave(
-  plot_data$Percentage,
-  plot_data$Endpoint,
-  FUN = function(x) cumsum(x) - x / 2
-)
+# Safe count: below the bar baseline
+safe_labels <- data[data$Safe > 0, ]
 
-# Annotate counts for non-zero segments
-plot_data$Label <- ifelse(
-  plot_data$Count > 0,
-  as.character(plot_data$Count),
-  ""
-)
+safe_labels$Label_y <- -4
 
-# Create plot
+# Toxic count: above the top of the stacked bar
+toxic_labels <- data[data$Toxic > 0, ]
+
+toxic_labels$Label_y <- 104
+
+# --------------------------------------------------
+# 4. Plot
+# --------------------------------------------------
+
 p <- ggplot(
   plot_data,
   aes(x = Endpoint, y = Percentage, fill = Category)
 ) +
   geom_col(
-    width = 0.78,
+    width = 0.8,
     color = "white",
-    linewidth = 0.25
+    linewidth = 0.25,
+    position = position_stack(reverse = TRUE)
   ) +
+
+  # Safe counts below bars
   geom_text(
-    aes(y = Label_y, label = Label),
-    size = 3,
+    data = safe_labels,
+    aes(
+      x = Endpoint,
+      y = Label_y,
+      label = Safe
+    ),
+    inherit.aes = FALSE,
     color = "black",
-    fontface = "bold"
+    fontface = "bold",
+    size = 3,
+    vjust = 0.5
   ) +
+
+  # Toxic counts above bars
+  geom_text(
+    data = toxic_labels,
+    aes(
+      x = Endpoint,
+      y = Label_y,
+      label = Toxic
+    ),
+    inherit.aes = FALSE,
+    color = "black",
+    fontface = "bold",
+    size = 3,
+    vjust = 0.5
+  ) +
+
   scale_fill_manual(
     values = c(
       "Safe" = "#4C956C",
       "Toxic" = "#D1495B"
     ),
-    breaks = c("Safe", "Toxic")
+    breaks = c("Safe", "Toxic"),
+    limits = c("Safe", "Toxic"),
+    drop = FALSE
   ) +
+
   scale_y_continuous(
-    limits = c(0, 100),
     breaks = seq(0, 100, 20),
     labels = function(x) paste0(x, "%"),
     expand = expansion(mult = c(0, 0))
   ) +
+
+  # Extra space below and above bars for counts
+  coord_cartesian(
+    ylim = c(-8, 110),
+    clip = "off"
+  ) +
+
   labs(
     x = "Toxicity endpoint",
     y = "Percentage of molecules (%)",
+    title="Distribution of Toxic and Safe Molecules across Different Toxicity Endpoints",
     fill = NULL
   ) +
+
   theme_classic(base_size = 12) +
+
   theme(
     axis.text.x = element_text(
       angle = 55,
@@ -141,37 +218,51 @@ p <- ggplot(
     axis.title = element_text(face = "bold"),
     legend.position = "top",
     legend.text = element_text(size = 10),
-    axis.ticks.x = element_line(color = "black"),
-    plot.margin = margin(10, 15, 10, 10)
+    plot.margin = margin(10, 15, 15, 10),
+    plot.title = element_text(
+      face = "bold",
+      hjust = 0.5,
+      size = 14
+    )
   )
 
-# Save according to output extension
+# --------------------------------------------------
+# 5. Save plot
+# --------------------------------------------------
+
+output_dir <- dirname(output_file)
+
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+
 extension <- tolower(tools::file_ext(output_file))
 
-if (extension == "png") {
-  ggsave(
-    output_file, plot = p,
-    width = 13, height = 7,
-    dpi = 300, bg = "white"
-  )
-} else if (extension == "pdf") {
+if (extension == "pdf") {
   ggsave(
     output_file, plot = p,
     width = 13, height = 7,
     device = "pdf"
   )
+} else if (extension == "png") {
+  ggsave(
+    output_file, plot = p,
+    width = 13, height = 7,
+    dpi = 300, bg = "white"
+  )
 } else if (extension == "svg") {
   if (!requireNamespace("svglite", quietly = TRUE)) {
-    stop("For SVG output, install svglite: install.packages('svglite')",
+    stop("Install svglite using install.packages('svglite')",
          call. = FALSE)
   }
+
   ggsave(
     output_file, plot = p,
     width = 13, height = 7,
     device = svglite::svglite
   )
 } else {
-  stop("Unsupported output format. Use .png, .pdf, or .svg",
+  stop("Unsupported format. Use .pdf, .png, or .svg",
        call. = FALSE)
 }
 
