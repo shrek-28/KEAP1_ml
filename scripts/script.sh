@@ -479,6 +479,18 @@ python3 scripts/admet_analysis/tox_analysis.py --input data/admet/toxicity_with_
 cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
 python3 scripts/admet_analysis/initial_toxicity_filters.py --input data/admet/interpretation_data.csv --output data/admet/non_toxic.csv
 
+# SUMMARIZATION
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+python3 scripts/admet_analysis/data_exploration.py --input data/admet/interpretation_data.csv --output-grouped data/admet/grouped_summary.csv --output-six data/admet/extended_summary.csv
+python3 scripts/admet_analysis/data_exploration.py --input data/admet/non_toxic.csv --output-grouped data/admet/grouped_nt_summary.csv --output-six data/admet/extended_nt_summary.csv
+
+# stacked bar plot of toxicity data
+
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml/plots
+mkdir admet_analysis
+
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+Rscript scripts/admet_analysis/visualization/stacked_toxicity_plot.R data/admet/grouped_nt_summary.csv 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

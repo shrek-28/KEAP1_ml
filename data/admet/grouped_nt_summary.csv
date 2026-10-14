@@ -1,0 +1,32 @@
+Endpoint,Safe,Toxic
+Nuclear Response_NR-AR,341,1
+Nuclear Response_NR-AR-LBD,294,48
+Nuclear Response_NR-AhR,342,0
+Nuclear Response_NR-Aromatase,340,2
+Nuclear Response_NR-ER,342,0
+Nuclear Response_NR-ER-LBD,339,3
+Nuclear Response_NR-PPAR-gamma,341,1
+Nuclear Response_NR-GR,301,41
+Nuclear Response_NR-TR,342,0
+Stress Response_SR-ARE,342,0
+Stress Response_SR-ATAD5,342,0
+Stress Response_SR-HSE,342,0
+Stress Response_SR-MMP,292,50
+Stress Response_SR-p53,333,9
+Genomic_AMES_Mutagenesis,339,3
+Genomic_Carcinogenesis,340,2
+Genomic_Micronucleus,10,332
+Environmental_Fathead_Minnow,46,296
+Environmental_T._Pyriformis,0,342
+Environmental_Honey_Bee,95,247
+Environmental_Biodegradation,338,4
+Environmental_Crustacean,263,79
+Environmental_Avian,340,2
+Organic_Skin_Sensitisation,341,1
+Organic_hERG_I_Inhibitor,342,0
+Organic_hERG_II_Inhibitor,176,166
+Organic_Liver_Injury_I,300,42
+Organic_Liver_Injury_II,259,83
+Organic_Eye_Irritation,342,0
+Organic_Eye_Corrosion,342,0
+Organic_Respiratory_Disease,0,342

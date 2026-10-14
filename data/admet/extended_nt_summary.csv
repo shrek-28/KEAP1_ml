@@ -1,0 +1,35 @@
+Endpoint,Low safety,Medium safety,High safety,Low toxicity,Medium toxicity,High toxicity
+Nuclear Response_NR-AR,6,55,280,1,0,0
+Nuclear Response_NR-AR-LBD,36,110,148,28,20,0
+Nuclear Response_NR-AhR,0,0,342,0,0,0
+Nuclear Response_NR-Aromatase,30,45,265,2,0,0
+Nuclear Response_NR-ER,25,298,19,0,0,0
+Nuclear Response_NR-ER-LBD,6,22,311,3,0,0
+Nuclear Response_NR-PPAR-gamma,5,0,336,1,0,0
+Nuclear Response_NR-GR,94,193,14,36,5,0
+Nuclear Response_NR-TR,10,68,264,0,0,0
+Stress Response_SR-ARE,44,240,58,0,0,0
+Stress Response_SR-ATAD5,4,11,327,0,0,0
+Stress Response_SR-HSE,1,9,332,0,0,0
+Stress Response_SR-MMP,92,101,99,48,2,0
+Stress Response_SR-p53,11,103,219,7,1,1
+Genomic_AMES_Mutagenesis,11,71,257,3,0,0
+Genomic_Carcinogenesis,0,8,332,2,0,0
+Genomic_Micronucleus,10,0,0,332,0,0
+Environmental_Fathead_Minnow,46,0,0,152,63,81
+Environmental_T._Pyriformis,0,0,0,48,193,101
+Environmental_Honey_Bee,60,33,2,126,45,76
+Environmental_Biodegradation,4,50,284,4,0,0
+Environmental_Crustacean,104,147,12,58,19,2
+Environmental_Avian,3,0,337,1,1,0
+Environmental_Rat_(Acute),0,0,0,0,0,0
+Environmental_Rat_(Chronic_Oral),0,0,0,0,0,0
+Dose Response_Maximum_Tolerated_Dose,0,0,0,0,0,0
+Organic_Skin_Sensitisation,264,76,1,1,0,0
+Organic_hERG_I_Inhibitor,0,14,328,0,0,0
+Organic_hERG_II_Inhibitor,149,27,0,166,0,0
+Organic_Liver_Injury_I,32,70,198,12,25,5
+Organic_Liver_Injury_II,225,33,1,70,13,0
+Organic_Eye_Irritation,0,14,328,0,0,0
+Organic_Eye_Corrosion,0,0,342,0,0,0
+Organic_Respiratory_Disease,0,0,0,35,209,98
