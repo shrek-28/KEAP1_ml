@@ -531,3 +531,10 @@ python3 scripts/post_docking_analysis/mmr_analysis/mmr_analysis.py \
 
 # generate tanimoto matrix 
 python3 scripts/post_docking_analysis/mmr_analysis/tanimoto_matrix.py --matrix data/post_dock_analysis/mmr_analysis/tanimoto_similarity_matrix.csv --selected data/post_dock_analysis/mmr_analysis/mmr_lambda_results.csv --output data/post_dock_analysis/mmr_analysis/final_tm_matrix.csv
+
+# generate plot for data 
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml/plots
+mkdir post_dock_analysis
+
+cd /Users/shreyasree/Documents/GitHub/KEAP1_ml
+Rscript scripts/post_docking_analysis/visualization/stacked_bar_int_counts.R data/post_dock_analysis/high_interaction_dataset_with_smiles_and_scores.csv data/post_dock_analysis/bonds_of_interest.txt plots/post_dock_analysis/stacked_interaction_plot.pdf
